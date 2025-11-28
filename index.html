@@ -14,6 +14,13 @@
         rel="stylesheet" />
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+    (function(){
+        // Remplacez par VOTRE Public Key
+        emailjs.init("3dhFqAZB7EhjuiZLD");
+    })();
+    </script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -64,40 +71,32 @@
             z-index: -1;
             transform: rotate(-1deg);
         }
+
+        /* Animation de clignotement pour le curseur du typing effect */
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .animate-blink {
+            animation: blink 0.75s step-end infinite;
+        }
     </style>
 </head>
 
 <body class="bg-paper font-display text-text-main pb-20">
     <div class="container mx-auto max-w-6xl px-6 lg:px-12 py-8">
-        <!-- <header class="flex flex-col md:flex-row items-center justify-center gap-10 pt-10 mb-16">
-
-            <div class="relative w-fit mx-auto md:mx-0">
-                <img 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgmXzfCzstwnpfEHW-mm0XQ1aGOuUeOiqRB3etrvtlGsxCQQ2Q6pNw5w1HqnM2NqkaUDfG8qhu1eTMG-f5aiDZVHDHt8SDafWak1WhMOHmZe56wtHTO_lQwwP-gPKnd0gyrdcN9rXsWEHeTfVFGfx8R1RjAlG9PvvUQtzy-E0MbmPWogmLdPJAJ1gfbqRsOs2Bc4b_ODlOPSfr6lgC0BGt6fWZeSATMWIIGOurAVQK1p1PGLajZOVxulEW4uGgFkWqKam6L9wufdWs" 
-                    alt="Portrait de Ouedraogo Abdoul Wahab"
-                    class="w-40 h-40 rounded-full object-cover border-4 border-black shadow-hard bg-white z-10 relative"
-                >
-
-                <span class="absolute -top-4 -left-8 text-accent-teal font-black text-sm -rotate-12 tracking-widest" style="font-family: cursive;">
-                    Depuis 1998
-                </span>
-
-                <span class="absolute top-0 -right-4 text-yellow-400 text-3xl animate-pulse">✦</span>
-                <span class="absolute bottom-0 -left-2 text-yellow-400 text-3xl animate-pulse delay-100">✦</span>
-            </div>
-
-            <div class="text-center md:text-left max-w-lg">
-                <h1 class="text-5xl font-black mb-4 uppercase tracking-tight">Bonjour,</h1>
-
-                <p class="text-lg font-medium leading-relaxed text-gray-800">
-                    Je m'appelle 
-                    <span class="font-bold">Ouedraogo Abdoul Wahab</span>.
-                    Je suis <span class="scribble-underline font-bold">développeur Web et mobile</span>
-                    basé à <span class="scribble-underline font-bold">Abidjan, Côte d'Ivoire</span>.
-                </p>
-            </div>
-
-        </header> -->
+        <nav class="absolute top-4 right-6">
+            <a href="#Contactez-moi"
+                class="bg-accent-teal text-white font-bold py-2 px-4 rounded-lg shadow-hard hover:bg-teal-400 transition-colors">
+                Contactez-moi
+            </a>
+        </nav>
         <header class="flex flex-col md:flex-row items-center justify-center gap-10 pt-10 mb-16">
             <div class="relative w-fit mx-auto md:mx-0">
                 <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgmXzfCzstwnpfEHW-mm0XQ1aGOuUeOiqRB3etrvtlGsxCQQ2Q6pNw5w1HqnM2NqkaUDfG8qhu1eTMG-f5aiDZVHDHt8SDafWak1WhMOHmZe56wtHTO_lQwwP-gPKnd0gyrdcN9rXsWEHeTfVFGfx8R1RjAlG9PvvUQtzy-E0MbmPWogmLdPJAJ1gfbqRsOs2Bc4b_ODlOPSfr6lgC0BGt6fWZeSATMWIIGOurAVQK1p1PGLajZOVxulEW4uGgFkWqKam6L9wufdWs"
@@ -111,6 +110,12 @@
 
                 <span class="absolute top-0 -right-4 text-yellow-400 text-3xl animate-pulse">✦</span>
                 <span class="absolute bottom-0 -left-2 text-yellow-400 text-3xl animate-pulse delay-100">✦</span>
+
+                <!-- Bouton de téléchargement du CV -->
+                <a href="path/to/your/cv.pdf" download
+                    class="mt-4 inline-block bg-accent-teal text-white font-bold py-2 px-4 rounded-lg shadow-hard hover:bg-teal-400 transition-colors">
+                    Télécharger mon CV
+                </a>
             </div>
 
             <div class="text-center md:text-left max-w-lg">
@@ -132,6 +137,7 @@
                 </p>
             </div>
         </header>
+        
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const typingElement = document.getElementById("typing-text");
@@ -188,8 +194,8 @@
             });
         </script>
 
+
         <main class="mt-12 space-y-16">
-            <!-- Section À propos -->
             <section class="mt-20 mx-auto max-w-4xl px-4">
                 <h2 class="text-2xl font-black mb-8 text-center uppercase tracking-wide">
                     À propos de moi
@@ -213,7 +219,6 @@
                 </div>
             </section>
 
-            <!-- Animations supplémentaires Tailwind -->
             <style>
                 @keyframes fadeIn {
                     0% {
@@ -303,7 +308,7 @@
                         <div
                             class="flex flex-col items-center bg-white border-2 border-black p-3 rounded-xl shadow-hard hover:-translate-y-1 transition-transform">
                             <div class="text-gray-700 mb-1">
-                                <span class="material-symbols-outlined text-3xl">hub</span>
+                                <span class="material-symbols-outlined">hub</span>
                             </div>
                             <span class="text-xs font-bold uppercase">Git</span>
                         </div>
@@ -311,7 +316,7 @@
                         <div
                             class="flex flex-col items-center bg-white border-2 border-black p-3 rounded-xl shadow-hard hover:-translate-y-1 transition-transform">
                             <div class="text-purple-600 mb-1">
-                                <span class="material-symbols-outlined text-3xl">design_services</span>
+                                <span class="material-symbols-outlined">design_services</span>
                             </div>
                             <span class="text-xs font-bold uppercase">Figma</span>
                         </div>
@@ -326,27 +331,27 @@
                     <div class="grid grid-cols-2 gap-6 justify-items-center">
                         <div
                             class="w-20 h-20 rounded-full border-3 border-black bg-white shadow-hard flex items-center justify-center font-bold text-sm hover:scale-105 transition-transform">
-                            VSCode
+                            <img src="vsc.avif" alt="">
                         </div>
                         <div
                             class="w-20 h-20 rounded-full border-3 border-black bg-white shadow-hard flex items-center justify-center font-bold text-sm hover:scale-105 transition-transform">
-                            Git
+                            <img src="git.png" class="rounded-full" alt="">
                         </div>
                         <div
                             class="w-20 h-20 rounded-full border-3 border-black bg-white shadow-hard flex items-center justify-center font-bold text-sm hover:scale-105 transition-transform">
-                            GitHub
+                            <img src="github.png" class="rounded-full" alt="">
                         </div>
                         <div
                             class="w-20 h-20 rounded-full border-3 border-black bg-white shadow-hard flex items-center justify-center font-bold text-sm hover:scale-105 transition-transform">
-                            MySQL
+                            <img src="mysql.png" class="rounded-full" alt="">
                         </div>
                         <div
                             class="w-20 h-20 rounded-full border-3 border-black bg-white shadow-hard flex items-center justify-center font-bold text-sm hover:scale-105 transition-transform">
-                            Figma
+                            <img src="figma.png" class="rounded-full" alt="">
                         </div>
                         <div
                             class="w-20 h-20 rounded-full border-3 border-black bg-white shadow-hard flex items-center justify-center font-bold text-sm hover:scale-105 transition-transform">
-                            Postman
+                            <img src="postman.png" class="rounded-full" alt="">
                         </div>
                     </div>
                 </section>
@@ -423,7 +428,7 @@
                     <div class="relative max-w-2xl pl-20">
                         <div class="absolute left-20 top-0 bottom-0 w-1.5 bg-black rounded-full z-0"></div>
 
-                        <div class="relative pl-10 mb-10 z-20 group  animate-slideUp">
+                        <div class="relative pl-10 mb-10 z-20 group animate-slideUp">
                             <div
                                 class="absolute -left-[14px] top-1/2 -translate-y-1/2 w-10 h-1.5 bg-black rounded-r-none">
                             </div>
@@ -473,9 +478,9 @@
                         </div>
 
                         <div class="relative pl-10 mb-10 z-10 group animate-slideUp delay-200">
-                            <div
+                            <!-- <div
                                 class="absolute -left-[14px] top-1/2 -translate-y-1/2 w-10 h-1.5 bg-black rounded-r-none z-0 ">
-                            </div>
+                            </div> -->
                             <div
                                 class="absolute -left-24 top-1/2 -translate-y-1/2 text-sm font-black z-30 whitespace-nowrap bg-white px-2 py-1 border-2 border-black shadow-hard-sm transform -rotate-1">
                                 2021
@@ -562,81 +567,96 @@
                 </div>
             </section>
         </main>
-        <!-- Section Contact avec formulaire interactif -->
-        <section class="mt-20 mx-auto max-w-4xl px-4 mb-20">
+        <section class="mt-20 mx-auto max-w-4xl px-4 mb-20" id="Contactez-moi">
             <h2 class="text-2xl font-black mb-12 text-center uppercase tracking-wide">
                 Contactez-moi
             </h2>
-            <form
-                class="bg-white border-2 border-black rounded-xl p-8 shadow-hard space-y-6 transition-transform hover:scale-[1.02]"
-                action="#" method="POST">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block font-bold text-sm mb-2" for="name">Nom</label>
-                        <input
-                            class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                            type="text" id="name" name="name" placeholder="Votre nom" required>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-sm mb-2" for="email">Email</label>
-                        <input
-                            class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                            type="email" id="email" name="email" placeholder="Votre email" required>
-                    </div>
-                </div>
+            <form id="contact-form" class="bg-white border-2 border-black rounded-xl p-8 shadow-hard space-y-6 transition-transform hover:scale-[1.02]">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label class="block font-bold text-sm mb-2" for="name">Nom</label>
+            <input class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal" type="text" id="name" name="name" placeholder="Votre nom" required>
+        </div>
+        <div>
+            <label class="block font-bold text-sm mb-2" for="email">Email</label>
+            <input class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal" type="email" id="email" name="email" placeholder="Votre email" required>
+        </div>
+    </div>
 
-                <div>
-                    <label class="block font-bold text-sm mb-2" for="subject">Objet</label>
-                    <input
-                        class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                        type="text" id="subject" name="subject" placeholder="Objet du message" required>
-                </div>
+    <div>
+        <label class="block font-bold text-sm mb-2" for="subject">Objet</label>
+        <input class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal" type="text" id="subject" name="subject" placeholder="Objet du message" required>
+    </div>
 
-                <div>
-                    <label class="block font-bold text-sm mb-2" for="message">Message</label>
-                    <textarea
-                        class="w-full border-2 border-black rounded-lg p-3 h-32 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                        id="message" name="message" placeholder="Votre message..." required></textarea>
-                </div>
+    <div>
+        <label class="block font-bold text-sm mb-2" for="message">Message</label>
+        <textarea class="w-full border-2 border-black rounded-lg p-3 h-32 focus:outline-none focus:ring-2 focus:ring-accent-teal" id="message" name="message" placeholder="Votre message..." required></textarea>
+    </div>
 
-                <button
-                    class="bg-accent-teal text-white font-bold py-3 px-6 rounded-xl shadow-hard hover:bg-teal-400 transition-colors">
-                    Envoyer
-                </button>
-            </form>
+    <button type="submit" id="btn-submit" class="bg-accent-teal text-white font-bold py-3 px-6 rounded-xl shadow-hard hover:bg-teal-400 transition-colors w-full">
+        Envoyer le message
+    </button>
+    <p id="form-status" class="text-center text-sm font-bold mt-2 hidden"></p>
+</form>
+
+<script>
+    document.getElementById('contact-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const btn = document.getElementById('btn-submit');
+    const status = document.getElementById('form-status');
+    const form = this;
+    
+    btn.innerText = 'Envoi en cours...';
+
+    // 1. VOS IDs (À REMPLACER)
+    const serviceID = 'service_0f71uyc';
+    const templateAdminID = 'template_de284b5'; // Celui qui vous notifie
+    const templateAutoReplyID = 'template_uxqylb7'; // Le nouveau pour le client
+
+    // 2. Envoi du mail à VOUS (Admin)
+    emailjs.sendForm(serviceID, templateAdminID, form)
+        .then(() => {
+            // 3. Si succès, envoi de l'auto-réponse au CLIENT
+            // On récupère les valeurs du formulaire pour l'envoyer manuellement
+            const userEmail = document.getElementById('email').value;
+            const userName = document.getElementById('name').value;
+            
+            // Params pour l'auto-reply
+            const autoReplyParams = {
+                name: userName,
+                email: userEmail,
+                // Ajoutez d'autres variables si besoin
+            };
+
+            return emailjs.send(serviceID, templateAutoReplyID, autoReplyParams);
+        })
+        .then(() => {
+            // 4. Tout est fini avec succès
+            btn.innerText = 'Envoyé !';
+            btn.classList.replace('bg-accent-teal', 'bg-green-500');
+            status.innerText = "Message reçu ! nous vous recontacterons sous peu.";
+            status.classList.remove('hidden', 'text-red-500');
+            status.classList.add('text-green-600');
+            form.reset();
+            
+            setTimeout(() => {
+                 btn.innerText = 'Envoyer le message';
+                 btn.classList.replace('bg-green-500', 'bg-accent-teal');
+                 status.classList.add('hidden');
+            }, 6000);
+        })
+        .catch((err) => {
+            btn.innerText = 'Erreur';
+            btn.classList.replace('bg-accent-teal', 'bg-red-500');
+            status.innerText = "Une erreur est survenue.";
+            status.classList.remove('hidden', 'text-green-600');
+            status.classList.add('text-red-500');
+            console.error('Erreur EmailJS:', err);
+        });
+});
+</script>
         </section>
-
-        <!-- Animations Tailwind pour Timeline et Formulaire -->
-        <style>
-            @keyframes slideUp {
-                0% {
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-
-                100% {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .animate-slideUp {
-                animation: slideUp 0.8s ease forwards;
-            }
-
-            .delay-100 {
-                animation-delay: 0.1s;
-            }
-
-            .delay-200 {
-                animation-delay: 0.2s;
-            }
-
-            .delay-300 {
-                animation-delay: 0.3s;
-            }
-        </style>
     </div>
 </body>
-
 </html>
