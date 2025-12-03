@@ -13,16 +13,16 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         rel="stylesheet" />
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <link rel="stylesheet" href="dist/output.css" />
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
-    (function(){
-        // Remplacez par VOTRE Public Key
-        emailjs.init("3dhFqAZB7EhjuiZLD");
-    })();
+        (function () {
+            // Remplacez par VOTRE Public Key
+            emailjs.init("3dhFqAZB7EhjuiZLD");
+        })();
     </script>
-    <script>
+    <!-- <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -47,6 +47,50 @@
                 },
             },
         };
+    </script> -->
+
+    <script>
+
+        // Vérifie si l'utilisateur a déjà choisi un thème
+        const savedTheme = localStorage.getItem("theme");
+
+        if (savedTheme) {
+            // Applique le thème sauvegardé
+            document.documentElement.classList.toggle(
+                "dark",
+                savedTheme === "dark"
+            );
+        } else {
+            // Sinon, détecte automatiquement le thème du système
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            document.documentElement.classList.toggle("dark", prefersDark);
+        }
+
+        // Fonction de toggle dark/light
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle("dark");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+        }
+
+        async function loadData() {
+            try {
+                const response = await fetch("data.json");
+                const data = await response.json();
+
+                // Appel des fonctions d'affichage
+                renderAbout(data.about);
+                renderSkills(data.skills);
+                renderProjects(data.projects);
+                renderExperience(data.experience);
+
+            } catch (error) {
+                console.error("Erreur chargement JSON:", error);
+            }
+        }
+
+        window.onload = loadData;
+
+
     </script>
 
     <style>
@@ -75,10 +119,12 @@
 
         /* Animation de clignotement pour le curseur du typing effect */
         @keyframes blink {
+
             0%,
             100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0;
             }
@@ -91,13 +137,34 @@
 </head>
 
 <body class="bg-paper font-display text-text-main pb-20">
-    <div class="container mx-auto max-w-6xl px-6 lg:px-12 py-8">
+    <div class="container mx-auto max-w-6xl px-6 lg:px-12 py-8 relative">
         <nav class="absolute top-4 right-6">
+            <!-- 🔘 Bouton Contact Desktop (flottant en haut à droite) -->
             <a href="#Contactez-moi"
-                class="bg-accent-teal text-white font-bold py-2 px-4 rounded-lg shadow-hard hover:bg-teal-400 transition-colors">
+                class="hidden md:flex fixed top-6 right-6 bg-primary text-white px-5 py-2 rounded-xl shadow-hard z-50 hover:scale-105 transition">
                 Contactez-moi
             </a>
+
+            <!-- 🔘 Boutons Mobile (en bas à droite) -->
+            <div class="fixed bottom-6 right-6 flex flex-col gap-3 md:hidden z-50">
+                <a href="#Contactez-moi"
+                    class="bg-primary text-white px-4 py-2 rounded-xl shadow-hard hover:scale-105 transition">
+                    Contact
+                </a>
+
+                <a href="/cv.pdf"
+                    class="bg-accent-teal text-black px-4 py-2 rounded-xl shadow-hard hover:scale-105 transition">
+                    Télécharger CV
+                </a>
+            </div>
+
+
         </nav>
+        <button onclick="toggleTheme()"
+            class="fixed top-6 left-6 bg-black text-white dark:bg-white dark:text-black px-3 py-2 rounded-xl shadow-hard z-50 transition hover:scale-105">
+            🌙 / ☀️
+        </button>
+
         <header class="flex flex-col md:flex-row items-center justify-center gap-10 pt-10 mb-16">
             <div class="relative w-fit mx-auto md:mx-0">
                 <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgmXzfCzstwnpfEHW-mm0XQ1aGOuUeOiqRB3etrvtlGsxCQQ2Q6pNw5w1HqnM2NqkaUDfG8qhu1eTMG-f5aiDZVHDHt8SDafWak1WhMOHmZe56wtHTO_lQwwP-gPKnd0gyrdcN9rXsWEHeTfVFGfx8R1RjAlG9PvvUQtzy-E0MbmPWogmLdPJAJ1gfbqRsOs2Bc4b_ODlOPSfr6lgC0BGt6fWZeSATMWIIGOurAVQK1p1PGLajZOVxulEW4uGgFkWqKam6L9wufdWs"
@@ -138,7 +205,7 @@
                 </p>
             </div>
         </header>
-        
+
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const typingElement = document.getElementById("typing-text");
@@ -572,92 +639,103 @@
             <h2 class="text-2xl font-black mb-12 text-center uppercase tracking-wide">
                 Contactez-moi
             </h2>
-            <form id="contact-form" class="bg-white border-2 border-black rounded-xl p-8 shadow-hard space-y-6 transition-transform hover:scale-[1.02]">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <label class="block font-bold text-sm mb-2" for="name">Nom</label>
-            <input class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal" type="text" id="name" name="name" placeholder="Votre nom" required>
-        </div>
-        <div>
-            <label class="block font-bold text-sm mb-2" for="email">Email</label>
-            <input class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal" type="email" id="email" name="email" placeholder="Votre email" required>
-        </div>
-    </div>
+            <form id="contact-form"
+                class="bg-white border-2 border-black rounded-xl p-8 shadow-hard space-y-6 transition-transform hover:scale-[1.02]">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block font-bold text-sm mb-2" for="name">Nom</label>
+                        <input
+                            class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                            type="text" id="name" name="name" placeholder="Votre nom" required>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-sm mb-2" for="email">Email</label>
+                        <input
+                            class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                            type="email" id="email" name="email" placeholder="Votre email" required>
+                    </div>
+                </div>
 
-    <div>
-        <label class="block font-bold text-sm mb-2" for="subject">Objet</label>
-        <input class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal" type="text" id="subject" name="subject" placeholder="Objet du message" required>
-    </div>
+                <div>
+                    <label class="block font-bold text-sm mb-2" for="subject">Objet</label>
+                    <input
+                        class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                        type="text" id="subject" name="subject" placeholder="Objet du message" required>
+                </div>
 
-    <div>
-        <label class="block font-bold text-sm mb-2" for="message">Message</label>
-        <textarea class="w-full border-2 border-black rounded-lg p-3 h-32 focus:outline-none focus:ring-2 focus:ring-accent-teal" id="message" name="message" placeholder="Votre message..." required></textarea>
-    </div>
+                <div>
+                    <label class="block font-bold text-sm mb-2" for="message">Message</label>
+                    <textarea
+                        class="w-full border-2 border-black rounded-lg p-3 h-32 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                        id="message" name="message" placeholder="Votre message..." required></textarea>
+                </div>
 
-    <button type="submit" id="btn-submit" class="bg-accent-teal text-white font-bold py-3 px-6 rounded-xl shadow-hard hover:bg-teal-400 transition-colors w-full">
-        Envoyer le message
-    </button>
-    <p id="form-status" class="text-center text-sm font-bold mt-2 hidden"></p>
-</form>
+                <button type="submit" id="btn-submit"
+                    class="bg-accent-teal text-white font-bold py-3 px-6 rounded-xl shadow-hard hover:bg-teal-400 transition-colors w-full">
+                    Envoyer le message
+                </button>
+                <p id="form-status" class="text-center text-sm font-bold mt-2 hidden"></p>
+            </form>
 
-<script>
-    document.getElementById('contact-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    const btn = document.getElementById('btn-submit');
-    const status = document.getElementById('form-status');
-    const form = this;
-    
-    btn.innerText = 'Envoi en cours...';
+            <script>
+                document.getElementById('contact-form').addEventListener('submit', function (event) {
+                    event.preventDefault();
 
-    // 1. VOS IDs (À REMPLACER)
-    const serviceID = 'service_0f71uyc';
-    const templateAdminID = 'template_de284b5'; // Celui qui vous notifie
-    const templateAutoReplyID = 'template_uxqylb7'; // Le nouveau pour le client
+                    const btn = document.getElementById('btn-submit');
+                    const status = document.getElementById('form-status');
+                    const form = this;
 
-    // 2. Envoi du mail à VOUS (Admin)
-    emailjs.sendForm(serviceID, templateAdminID, form)
-        .then(() => {
-            // 3. Si succès, envoi de l'auto-réponse au CLIENT
-            // On récupère les valeurs du formulaire pour l'envoyer manuellement
-            const userEmail = document.getElementById('email').value;
-            const userName = document.getElementById('name').value;
-            
-            // Params pour l'auto-reply
-            const autoReplyParams = {
-                name: userName,
-                email: userEmail,
-                // Ajoutez d'autres variables si besoin
-            };
+                    btn.innerText = 'Envoi en cours...';
 
-            return emailjs.send(serviceID, templateAutoReplyID, autoReplyParams);
-        })
-        .then(() => {
-            // 4. Tout est fini avec succès
-            btn.innerText = 'Envoyé !';
-            btn.classList.replace('bg-accent-teal', 'bg-green-500');
-            status.innerText = "Message reçu ! nous vous recontacterons sous peu.";
-            status.classList.remove('hidden', 'text-red-500');
-            status.classList.add('text-green-600');
-            form.reset();
-            
-            setTimeout(() => {
-                 btn.innerText = 'Envoyer le message';
-                 btn.classList.replace('bg-green-500', 'bg-accent-teal');
-                 status.classList.add('hidden');
-            }, 6000);
-        })
-        .catch((err) => {
-            btn.innerText = 'Erreur';
-            btn.classList.replace('bg-accent-teal', 'bg-red-500');
-            status.innerText = "Une erreur est survenue.";
-            status.classList.remove('hidden', 'text-green-600');
-            status.classList.add('text-red-500');
-            console.error('Erreur EmailJS:', err);
-        });
-});
-</script>
+                    // 1. VOS IDs (À REMPLACER)
+                    const serviceID = 'service_0f71uyc';
+                    const templateAdminID = 'template_de284b5'; // Celui qui vous notifie
+                    const templateAutoReplyID = 'template_uxqylb7'; // Le nouveau pour le client
+
+                    // 2. Envoi du mail à VOUS (Admin)
+                    emailjs.sendForm(serviceID, templateAdminID, form)
+                        .then(() => {
+                            // 3. Si succès, envoi de l'auto-réponse au CLIENT
+                            // On récupère les valeurs du formulaire pour l'envoyer manuellement
+                            const userEmail = document.getElementById('email').value;
+                            const userName = document.getElementById('name').value;
+
+                            // Params pour l'auto-reply
+                            const autoReplyParams = {
+                                name: userName,
+                                email: userEmail,
+                                // Ajoutez d'autres variables si besoin
+                            };
+
+                            return emailjs.send(serviceID, templateAutoReplyID, autoReplyParams);
+                        })
+                        .then(() => {
+                            // 4. Tout est fini avec succès
+                            btn.innerText = 'Envoyé !';
+                            btn.classList.replace('bg-accent-teal', 'bg-green-500');
+                            status.innerText = "Message reçu ! nous vous recontacterons sous peu.";
+                            status.classList.remove('hidden', 'text-red-500');
+                            status.classList.add('text-green-600');
+                            form.reset();
+
+                            setTimeout(() => {
+                                btn.innerText = 'Envoyer le message';
+                                btn.classList.replace('bg-green-500', 'bg-accent-teal');
+                                status.classList.add('hidden');
+                            }, 6000);
+                        })
+                        .catch((err) => {
+                            btn.innerText = 'Erreur';
+                            btn.classList.replace('bg-accent-teal', 'bg-red-500');
+                            status.innerText = "Une erreur est survenue.";
+                            status.classList.remove('hidden', 'text-green-600');
+                            status.classList.add('text-red-500');
+                            console.error('Erreur EmailJS:', err);
+                        });
+                });
+            </script>
         </section>
     </div>
 </body>
+
 </html>
