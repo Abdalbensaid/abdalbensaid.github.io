@@ -22,7 +22,7 @@
         { "name": "Figma", "icon": "design_services", "color": "text-purple-600" }
     ],
     "tools": [
-        "VSCode", "Git", "GitHub", "MySQL", "Figma", "Postman"
+        {"name":"VSCode", "img":"vsc.avif"}, {"name":"Git", "img":"git.png"}, {"name":"GitHub", "img":"github.png"}, {"name":"MySQL", "img":"mysql.png"}, {"name":"Figma", "img":"figma.png"}, {"name":"Postman", "img":"postman.png"}
     ],
     "projects": [
         { "title": "CMS Blog", "desc": "Gestion de contenu complet", "icon": "article", "bg": "bg-teal-50" },
