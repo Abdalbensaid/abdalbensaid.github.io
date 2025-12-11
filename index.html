@@ -651,64 +651,160 @@
         .delay-300 {
             animation-delay: 0.3s;
         }
+
+        /* Radar */
+        @keyframes radar {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-radar {
+            animation: radar 8s linear infinite;
+        }
+
+        /* 3D tilt effect */
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-3d:hover {
+            transform: rotateY(8deg) rotateX(8deg) scale(1.03);
+        }
+
+        .shadow-hard-lg {
+            box-shadow: 10px 10px 0px 0px #1f2937;
+            /* Gris sombre (gray-800) */
+        }
+
+        .shadow-hard-teal {
+            box-shadow: 6px 6px 0px 0px #0d9488;
+            /* Teal-600 */
+        }
+
+        .shadow-hard-green {
+            box-shadow: 6px 6px 0px 0px #16a34a;
+            /* Green-600 */
+        }
+
+        /* Radar rotation */
+        @keyframes radar-spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-radar {
+            animation: radar-spin 12s linear infinite;
+        }
+
+        /* Le canvas ne doit pas gêner les clics */
+        #particles-interface {
+            pointer-events: none;
+        }
     </style>
+
 </head>
 
 <body
     class="bg-paper text-text-main dark:bg-[#0d0d0d] dark:text-gray-200 font-display pb-20 transition-colors duration-300">
+    <!-- Effets visuels DARKMODE -->
+    <div id="darkmode-effects" class="hidden dark:block pointer-events-none">
+        <!-- PARTCILES -->
+        <canvas id="particles-interface" class="fixed inset-0 z-0"></canvas>
 
-    <!-- AJOUTE ce code juste après la balise <body> -->
-    <div id="mode-selection-page"
-        class="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-paper dark:bg-[#0d0d0d]">
-        <div class="text-center mb-12">
-            <h1 class="text-5xl md:text-6xl font-black mb-4 uppercase tracking-tight dark:text-white">
-                Portfolio
-            </h1>
-            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Bienvenue sur le portfolio de <span class="font-bold text-accent-teal">Ouedraogo Abdoul Wahab</span>
-            </p>
-            <p class="text-gray-500 dark:text-gray-400 mt-2">
-                Choisissez votre mode de navigation préféré
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
-            <!-- Mode Interface Graphique -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-hard cursor-pointer hover:scale-105 transition-transform"
-                onclick="chooseMode('gui')">
-                <div class="flex flex-col items-center text-center">
-                    <div
-                        class="w-24 h-24 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-5xl text-blue-600 dark:text-blue-300">
-                            desktop_windows
-                        </span>
-                    </div>
-                    <h2 class="text-2xl font-black mb-3 dark:text-white">Interface Graphique</h2>
-                    <button
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-hard transition-colors w-full">
-                        Choisir ce mode
-                    </button>
-                </div>
-            </div>
-
-            <!-- Mode Terminal -->
-            <div class="bg-black rounded-2xl p-8 shadow-hard cursor-pointer hover:scale-105 transition-transform"
-                onclick="chooseMode('terminal')">
-                <div class="flex flex-col items-center text-center">
-                    <div class="w-24 h-24 rounded-full bg-green-900 flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-5xl text-green-400">
-                            terminal
-                        </span>
-                    </div>
-                    <h2 class="text-2xl font-black mb-3 text-green-400">Mode Terminal</h2>
-                    <button
-                        class="bg-green-700 hover:bg-green-800 text-green-100 font-bold py-3 px-8 rounded-xl shadow-hard transition-colors w-full">
-                        Choisir ce mode
-                    </button>
-                </div>
-            </div>
+        <!-- RADAR -->
+        <div class="fixed left-1/2 top-1/2 w-[800px] h-[800px] 
+                -translate-x-1/2 -translate-y-1/2 
+                rounded-full border border-blue-500/20 
+                opacity-10 animate-radar z-0">
         </div>
     </div>
+
+    <!-- AJOUTE ce code juste après la balise <body> -->
+    <!-- PAGE DE SELECTION MODE ULTRA-STYLISÉE -->
+    <div id="mode-selection-page"
+        class="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-[#080808] text-white relative overflow-hidden">
+
+        <!-- 🌌 — BACKGROUND PARTICULES -->
+        <canvas id="particles-bg" class="absolute inset-0"></canvas>
+
+        <!-- 🌐 — ANIMATION SCAN RADAR -->
+        <div class="absolute w-[600px] h-[600px] rounded-full border border-green-500/20 
+                animate-radar opacity-10"></div>
+
+        <!-- 🔤 — LOGO TYPING EFFECT -->
+        <h1 id="logo-typing" class="text-6xl md:text-7xl font-black tracking-widest text-blue-400 drop-shadow-[0_0_25px_#3b82f6]
+               mb-6 relative z-10 font-mono whitespace-nowrap">
+        </h1>
+
+        <p class="text-gray-300 text-center mb-16 text-lg relative z-10 animate-pulse">
+            Choisissez votre expérience
+        </p>
+
+        <!-- 🟦🟩 — CARTES -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-5xl relative z-10">
+
+            <!-- 🟦 GUI CARD -->
+            <div onclick="animatedSelect('gui')" class="card-3d bg-[#111] backdrop-blur-md border border-gray-800 rounded-2xl p-10 cursor-pointer
+                   transition-all duration-300 hover:shadow-[0_10px_35px_rgba(59,130,246,0.4)]
+                   hover:border-blue-500/40">
+
+                <div class="mb-6 transform transition-transform duration-300 group-hover:rotate-6">
+                    <span class="material-symbols-outlined text-5xl text-blue-400 drop-shadow-[0_0_20px_#3b82f6]">
+                        desktop_windows
+                    </span>
+                </div>
+
+                <h2 class="text-2xl font-bold mb-3">Interface Graphique</h2>
+                <p class="text-gray-400 leading-relaxed mb-6 text-sm">
+                    Une interface moderne, visuelle et interactive pour explorer mon portfolio.
+                </p>
+
+                <span class="text-blue-400 font-semibold flex items-center gap-2 hover:translate-x-2 transition-all">
+                    Lancer le GUI →
+                </span>
+            </div>
+
+            <!-- 🟩 TERMINAL CARD -->
+            <div onclick="animatedSelect('terminal')" class="card-3d bg-[#111] backdrop-blur-md border border-gray-800 rounded-2xl p-10 cursor-pointer
+                    transition-all duration-300 hover:shadow-[0_10px_35px_rgba(16,185,129,0.4)]
+                    hover:border-green-500/40">
+
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="w-3 h-3 bg-red-500 rounded-full shadow-[0_0_10px_#ef4444]"></span>
+                    <span class="w-3 h-3 bg-yellow-400 rounded-full shadow-[0_0_10px_#facc15]"></span>
+                    <span class="w-3 h-3 bg-green-500 rounded-full shadow-[0_0_10px_#22c55e]"></span>
+                </div>
+
+                <pre class="text-green-400 font-mono text-sm leading-relaxed select-none">
+[root@WahabPortfolio] [~/terminal.sh]
+
+[1] ✓ À propos
+[2] ✓ Compétences
+[3] ✓ Projets
+[4] ✓ Expérience
+[5] ✓ Outils
+[7] ✓ Contact
+[h] ✓ Aide
+[q] ✓ Quitter
+
+$ launch cli
+            </pre>
+            </div>
+
+        </div>
+    </div>
+
 
     <div id="terminal-container" class="hidden"></div>
     <div id="gui-container" class="hidden container mx-auto max-w-6xl px-6 lg:px-12 py-8 relative">
@@ -1292,6 +1388,136 @@
             </script>
         </section>
     </div>
+
+    <script>
+        /* === Typing Effect Logo === */
+        const logoText = "ABDOUL WAHAB";
+        let i = 0;
+
+        function typeLogo() {
+            if (i <= logoText.length) {
+                document.getElementById("logo-typing").textContent = logoText.slice(0, i);
+                i++;
+                setTimeout(typeLogo, 300);
+            }
+        }
+        typeLogo();
+
+        /* === Particules animées === */
+        const canvas = document.getElementById("particles-bg");
+        const ctx = canvas.getContext("2d");
+
+        let particles = [];
+        const total = 40;
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.onresize = resize;
+
+        for (let i = 0; i < total; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2 + 1,
+                dx: Math.random() * 0.6 - 0.3,
+                dy: Math.random() * 0.6 - 0.3,
+            });
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(59,130,246,0.6)";
+                ctx.fill();
+
+                p.x += p.dx;
+                p.y += p.dy;
+
+                if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        /* === Transition animée lors du choix === */
+        function animatedSelect(mode) {
+            const page = document.getElementById("mode-selection-page");
+            page.style.opacity = "0";
+            page.style.transition = "opacity 0.5s ease";
+
+            setTimeout(() => {
+                chooseMode(mode);
+                page.style.opacity = "1";
+            }, 500);
+        }
+    </script>
+    <script>
+/* === PARTICULES + RADAR POUR L'INTERFACE GRAPHIQUE (DARKMODE SEULEMENT) === */
+document.addEventListener("DOMContentLoaded", () => {
+
+    // On vérifie que les éléments existent
+    const canvas = document.getElementById("particles-interface");
+    if (!canvas) return;
+
+    // On active uniquement en darkmode
+    if (!document.body.classList.contains("dark")) {
+        canvas.style.display = "none";
+        return;
+    }
+
+    const ctx = canvas.getContext("2d");
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    let particles = [];
+    const total = 45;
+
+    for (let i = 0; i < total; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 2 + 1,
+            dx: Math.random() * 0.4 - 0.2,
+            dy: Math.random() * 0.4 - 0.2,
+        });
+    }
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach(p => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(59,130,246,0.5)";
+            ctx.fill();
+
+            p.x += p.dx;
+            p.y += p.dy;
+
+            if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+            if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+        });
+
+        requestAnimationFrame(animateParticles);
+    }
+
+    animateParticles();
+});
+</script>
+
 </body>
 
 </html>
