@@ -167,11 +167,11 @@
 
                 // 6. Génération de l'Expérience
                 const expContainer = document.getElementById('experience-container');
-                const verticalLine = '<div class="absolute left-20 top-0 bottom-0 w-1.5 bg-black rounded-full z-0"></div>';
+                const verticalLine = '<div class="timeline-vertical-line absolute left-20 top-0 bottom-0 w-1.5 bg-black rounded-full z-0"></div>';
 
                 const expHTML = data.experience.map((exp, index) => `
                     <div class="relative pl-10 mb-10 z-20 group animate-slideUp" style="animation-delay: ${index * 100}ms">
-                        <div class="absolute -left-[14px] top-1/2 -translate-y-1/2 w-10 h-1.5 bg-black rounded-r-none"></div>
+                        <div class="timeline-horizontal-line absolute -left-[14px] top-1/2 -translate-y-1/2 w-10 h-1.5 bg-black rounded-r-none"></div>
                         
                         <div class="absolute -left-28 top-1/2 -translate-y-1/2 text-sm font-black whitespace-nowrap px-2 py-1 border-2 border-black shadow-hard-sm transform ${exp.rotation} ${exp.bg_year}">
                             ${exp.year}
@@ -525,6 +525,23 @@
                 // Pour retourner à la sélection
                 returnToModeSelection();
             }
+
+            if (mode === "gui") {
+                if (selectionPage) selectionPage.classList.add("hidden");
+                if (term) {
+                    term.classList.add("hidden");
+                    term.innerHTML = "";
+                }
+                if (gui) gui.classList.remove("hidden");
+
+                // S'assurer que les particules GUI sont visibles
+                const guiParticles = document.getElementById('particles-gui');
+                if (guiParticles && document.body.classList.contains('dark')) {
+                    guiParticles.style.display = 'block';
+                }
+
+                localStorage.setItem("app-mode", "gui");
+            }
         }
 
 
@@ -569,11 +586,48 @@
         }
 
         #terminal-container {
-            background-color: #000;
-            color: #00ff00;
-            font-family: 'Monospace', 'Courier New', monospace;
-            letter-spacing: 0.5px;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background-color: #000 !important;
+            z-index: 9999 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
         }
+
+      /* Timeline vertical line - Blue neon effect */
+.timeline-vertical-line , .timeline-horizontal-line{
+    transition: all 0.5s ease;
+}
+
+.dark .timeline-vertical-line, .dark .timeline-horizontal-line {
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(59, 130, 246, 0.6),
+        transparent
+    ) !important;
+    box-shadow: 
+        0 0 15px rgba(59, 130, 246, 0.5),
+        0 0 30px rgba(59, 130, 246, 0.3);
+}
+
+/* Animation de pulsation */
+@keyframes timeline-pulse {
+    0%, 100% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.dark .timeline-vertical-line, .dark .timeline-horizontal-line {
+    animation: timeline-pulse 3s ease-in-out infinite;
+}
 
         #terminal-input {
             caret-color: #00ff00;
@@ -711,12 +765,158 @@
         #particles-interface {
             pointer-events: none;
         }
+
+        /* === CORRECTIONS MODE SOMBRE === */
+        .dark .text-text-main {
+            color: #ffffff;
+        }
+
+        .dark .text-gray-800 {
+            color: #e5e7eb;
+        }
+
+        .dark .text-gray-700 {
+            color: #d1d5db;
+        }
+
+        .dark .text-gray-500 {
+            color: #9ca3af;
+        }
+
+        .dark .bg-white {
+            background-color: #1f2937 !important;
+            border-color: #374151 !important;
+        }
+
+        .dark .bg-paper {
+            background-color: #111827;
+        }
+
+        .dark .shadow-hard {
+            box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .dark .shadow-hard-sm {
+            box-shadow: 2px 2px 0px 0px rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Correction pour les boutons */
+        .dark .bg-primary {
+            background-color: #f59e0b !important;
+        }
+
+        .dark .bg-accent-teal {
+            background-color: #4fd1c5 !important;
+        }
+
+        /* Assurez-vous que tous les textes dans les cartes blanches sont visibles */
+        .dark div.bg-white,
+        .dark section.bg-white {
+            color: #f9fafb;
+        }
+
+        /* Pour le formulaire de contact */
+        .dark #contact-form {
+            background-color: #1f2937 !important;
+            border-color: #374151 !important;
+        }
+
+        .dark #contact-form input,
+        .dark #contact-form textarea {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f9fafb !important;
+        }
+
+        .dark #contact-form input::placeholder,
+        .dark #contact-form textarea::placeholder {
+            color: #9ca3af !important;
+        }
+
+        /* === EFFETS DARKMODE POUR GUI === */
+        .dark #gui-container {
+            background-color: transparent !important;
+        }
+
+        /* Effets de particules pour GUI en darkmode */
+        .dark #gui-container::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #080808;
+            z-index: -2;
+        }
+
+        /* Radar pour GUI */
+        .dark #gui-container::after {
+            content: "";
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            width: 800px;
+            height: 800px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            opacity: 0.1;
+            animation: radar 12s linear infinite;
+            z-index: -1;
+        }
+
+        /* Particules pour GUI */
+        #particles-gui {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: -1 !important;
+            pointer-events: none;
+        }
+
+        /* Assure que le contenu GUI reste visible */
+        .dark #gui-container>* {
+            position: relative !important;
+            z-index: 1 !important;
+        }
+
+        /* Correction de la couleur du texte en darkmode GUI */
+        .dark #gui-container .text-gray-800 {
+            color: #f3f4f6 !important;
+            /* gray-100 */
+        }
+
+        .dark #gui-container .text-gray-700 {
+            color: #e5e7eb !important;
+            /* gray-200 */
+        }
+
+        /* Cartes en darkmode GUI */
+        .dark #gui-container .bg-white {
+            background-color: rgba(17, 17, 17, 0.9) !important;
+            /* Fond semi-transparent noir */
+            backdrop-filter: blur(10px);
+            border-color: #374151 !important;
+            /* gray-700 */
+        }
+
+        /* Boutons en darkmode GUI */
+        .dark #gui-container .bg-primary {
+            background-color: #f59e0b !important;
+        }
+
+        .dark #gui-container .bg-accent-teal {
+            background-color: #4fd1c5 !important;
+        }
     </style>
 
 </head>
 
 <body
-    class="bg-paper text-text-main dark:bg-[#0d0d0d] dark:text-gray-200 font-display pb-20 transition-colors duration-300">
+    class="bg-paper text-text-main dark:bg-[#0d0d0d] dark:text-gray-100 font-display pb-20 transition-colors duration-300">
     <!-- Effets visuels DARKMODE -->
     <div id="darkmode-effects" class="hidden dark:block pointer-events-none">
         <!-- PARTCILES -->
@@ -729,8 +929,6 @@
                 opacity-10 animate-radar z-0">
         </div>
     </div>
-
-    <!-- AJOUTE ce code juste après la balise <body> -->
     <!-- PAGE DE SELECTION MODE ULTRA-STYLISÉE -->
     <div id="mode-selection-page"
         class="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-[#080808] text-white relative overflow-hidden">
@@ -787,19 +985,19 @@
                 </div>
 
                 <pre class="text-green-400 font-mono text-sm leading-relaxed select-none">
-[root@WahabPortfolio] [~/terminal.sh]
+                    [root@AbdoulWahab] [~/terminal.sh]
 
-[1] ✓ À propos
-[2] ✓ Compétences
-[3] ✓ Projets
-[4] ✓ Expérience
-[5] ✓ Outils
-[7] ✓ Contact
-[h] ✓ Aide
-[q] ✓ Quitter
+                    [1] ✓ À propos
+                    [2] ✓ Compétences
+                    [3] ✓ Projets
+                    [4] ✓ Expérience
+                    [5] ✓ Outils
+                    [7] ✓ Contact
+                    [h] ✓ Aide
+                    [q] ✓ Quitter
 
-$ launch cli
-            </pre>
+                    $ launch cli
+                </pre>
             </div>
 
         </div>
@@ -808,7 +1006,16 @@ $ launch cli
 
     <div id="terminal-container" class="hidden"></div>
     <div id="gui-container" class="hidden container mx-auto max-w-6xl px-6 lg:px-12 py-8 relative">
-        <nav class="absolute top-4 right-6">
+        <!-- EFFETS DE FOND EN DARKMODE -->
+        <div class="darkmode-gui-effects hidden dark:block fixed inset-0 -z-10 pointer-events-none">
+            <!-- Radar -->
+            <div class="absolute left-1/2 top-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 
+                    rounded-full border border-green-500/20 animate-radar opacity-10"></div>
+            <!-- Fond -->
+            <div class="absolute inset-0 bg-[#080808]"></div>
+        </div>
+
+        <nav class="absolute top-4 right-6 z-50">
             <!-- 🔘 Bouton Contact Desktop (flottant en haut à droite) -->
             <a href="#Contactez-moi"
                 class="hidden md:flex fixed top-6 right-6 bg-primary text-white px-5 py-2 rounded-xl shadow-hard z-50 hover:scale-105 transition">
@@ -1264,7 +1471,8 @@ $ launch cli
                             2021-2022 (1 an)
                         </p>
                         <p class="text-gray-700 mt-2">
-                            Création d'interfaces web dynamiques et réactives, amélioration de l'expérience utilisateur
+                            Création d'interfaces web dynamiques et réactives, amélioration de l'expérience
+                            utilisateur
                             et intégration avec le backend.
                         </p>
                     </div>
@@ -1287,107 +1495,108 @@ $ launch cli
                 </div>
             </section>
         </main>
-        <section class="mt-20 mx-auto max-w-4xl px-4 mb-20" id="Contactez-moi">
-            <h2 class="text-2xl font-black mb-12 text-center uppercase tracking-wide">
-                Contactez-moi
-            </h2>
-            <form id="contact-form"
-                class="bg-white border-2 border-black rounded-xl p-8 shadow-hard space-y-6 transition-transform hover:scale-[1.02]">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block font-bold text-sm mb-2" for="name">Nom</label>
-                        <input
-                            class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                            type="text" id="name" name="name" placeholder="Votre nom" required>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-sm mb-2" for="email">Email</label>
-                        <input
-                            class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                            type="email" id="email" name="email" placeholder="Votre email" required>
-                    </div>
-                </div>
-
+    </div>
+    <section class="mt-20 mx-auto max-w-4xl px-4 mb-20 " id="Contactez-moi">
+        <h2 class="text-2xl font-black mb-12 text-center uppercase tracking-wide">
+            Contactez-moi
+        </h2>
+        <form id="contact-form"
+            class="bg-white border-2 border-black rounded-xl p-8 shadow-hard space-y-6 transition-transform hover:scale-[1.02]">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block font-bold text-sm mb-2" for="subject">Objet</label>
+                    <label class="block font-bold text-sm mb-2" for="name">Nom</label>
                     <input
                         class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                        type="text" id="subject" name="subject" placeholder="Objet du message" required>
+                        type="text" id="name" name="name" placeholder="Votre nom" required>
                 </div>
-
                 <div>
-                    <label class="block font-bold text-sm mb-2" for="message">Message</label>
-                    <textarea
-                        class="w-full border-2 border-black rounded-lg p-3 h-32 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                        id="message" name="message" placeholder="Votre message..." required></textarea>
+                    <label class="block font-bold text-sm mb-2" for="email">Email</label>
+                    <input
+                        class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                        type="email" id="email" name="email" placeholder="Votre email" required>
                 </div>
+            </div>
 
-                <button type="submit" id="btn-submit"
-                    class="bg-accent-teal text-white font-bold py-3 px-6 rounded-xl shadow-hard hover:bg-teal-400 transition-colors w-full">
-                    Envoyer le message
-                </button>
-                <p id="form-status" class="text-center text-sm font-bold mt-2 hidden"></p>
-            </form>
+            <div>
+                <label class="block font-bold text-sm mb-2" for="subject">Objet</label>
+                <input
+                    class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                    type="text" id="subject" name="subject" placeholder="Objet du message" required>
+            </div>
 
-            <script>
-                document.getElementById('contact-form').addEventListener('submit', function (event) {
-                    event.preventDefault();
+            <div>
+                <label class="block font-bold text-sm mb-2" for="message">Message</label>
+                <textarea
+                    class="w-full border-2 border-black rounded-lg p-3 h-32 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                    id="message" name="message" placeholder="Votre message..." required></textarea>
+            </div>
 
-                    const btn = document.getElementById('btn-submit');
-                    const status = document.getElementById('form-status');
-                    const form = this;
+            <button type="submit" id="btn-submit"
+                class="bg-accent-teal text-white font-bold py-3 px-6 rounded-xl shadow-hard hover:bg-teal-400 transition-colors w-full">
+                Envoyer le message
+            </button>
+            <p id="form-status" class="text-center text-sm font-bold mt-2 hidden"></p>
+        </form>
 
-                    btn.innerText = 'Envoi en cours...';
+        <script>
+            document.getElementById('contact-form').addEventListener('submit', function (event) {
+                event.preventDefault();
 
-                    // 1. VOS IDs (À REMPLACER)
-                    const serviceID = 'service_0f71uyc';
-                    const templateAdminID = 'template_de284b5'; // Celui qui vous notifie
-                    const templateAutoReplyID = 'template_uxqylb7'; // Le nouveau pour le client
+                const btn = document.getElementById('btn-submit');
+                const status = document.getElementById('form-status');
+                const form = this;
 
-                    // 2. Envoi du mail à VOUS (Admin)
-                    emailjs.sendForm(serviceID, templateAdminID, form)
-                        .then(() => {
-                            // 3. Si succès, envoi de l'auto-réponse au CLIENT
-                            // On récupère les valeurs du formulaire pour l'envoyer manuellement
-                            const userEmail = document.getElementById('email').value;
-                            const userName = document.getElementById('name').value;
+                btn.innerText = 'Envoi en cours...';
 
-                            // Params pour l'auto-reply
-                            const autoReplyParams = {
-                                name: userName,
-                                email: userEmail,
-                                // Ajoutez d'autres variables si besoin
-                            };
+                // 1. VOS IDs (À REMPLACER)
+                const serviceID = 'service_0f71uyc';
+                const templateAdminID = 'template_de284b5'; // Celui qui vous notifie
+                const templateAutoReplyID = 'template_uxqylb7'; // Le nouveau pour le client
 
-                            return emailjs.send(serviceID, templateAutoReplyID, autoReplyParams);
-                        })
-                        .then(() => {
-                            // 4. Tout est fini avec succès
-                            btn.innerText = 'Envoyé !';
-                            btn.classList.replace('bg-accent-teal', 'bg-green-500');
-                            status.innerText = "Message reçu ! nous vous recontacterons sous peu.";
-                            status.classList.remove('hidden', 'text-red-500');
-                            status.classList.add('text-green-600');
-                            form.reset();
+                // 2. Envoi du mail à VOUS (Admin)
+                emailjs.sendForm(serviceID, templateAdminID, form)
+                    .then(() => {
+                        // 3. Si succès, envoi de l'auto-réponse au CLIENT
+                        // On récupère les valeurs du formulaire pour l'envoyer manuellement
+                        const userEmail = document.getElementById('email').value;
+                        const userName = document.getElementById('name').value;
 
-                            setTimeout(() => {
-                                btn.innerText = 'Envoyer le message';
-                                btn.classList.replace('bg-green-500', 'bg-accent-teal');
-                                status.classList.add('hidden');
-                            }, 6000);
-                        })
-                        .catch((err) => {
-                            btn.innerText = 'Erreur';
-                            btn.classList.replace('bg-accent-teal', 'bg-red-500');
-                            status.innerText = "Une erreur est survenue.";
-                            status.classList.remove('hidden', 'text-green-600');
-                            status.classList.add('text-red-500');
-                            console.error('Erreur EmailJS:', err);
-                        });
-                });
-            </script>
-        </section>
-    </div>
+                        // Params pour l'auto-reply
+                        const autoReplyParams = {
+                            name: userName,
+                            email: userEmail,
+                            // Ajoutez d'autres variables si besoin
+                        };
+
+                        return emailjs.send(serviceID, templateAutoReplyID, autoReplyParams);
+                    })
+                    .then(() => {
+                        // 4. Tout est fini avec succès
+                        btn.innerText = 'Envoyé !';
+                        btn.classList.replace('bg-accent-teal', 'bg-green-500');
+                        status.innerText = "Message reçu ! nous vous recontacterons sous peu.";
+                        status.classList.remove('hidden', 'text-red-500');
+                        status.classList.add('text-green-600');
+                        form.reset();
+
+                        setTimeout(() => {
+                            btn.innerText = 'Envoyer le message';
+                            btn.classList.replace('bg-green-500', 'bg-accent-teal');
+                            status.classList.add('hidden');
+                        }, 6000);
+                    })
+                    .catch((err) => {
+                        btn.innerText = 'Erreur';
+                        btn.classList.replace('bg-accent-teal', 'bg-red-500');
+                        status.innerText = "Une erreur est survenue.";
+                        status.classList.remove('hidden', 'text-green-600');
+                        status.classList.add('text-red-500');
+                        console.error('Erreur EmailJS:', err);
+                    });
+            });
+        </script>
+    </section>
+
 
     <script>
         /* === Typing Effect Logo === */
@@ -1460,63 +1669,122 @@ $ launch cli
         }
     </script>
     <script>
-/* === PARTICULES + RADAR POUR L'INTERFACE GRAPHIQUE (DARKMODE SEULEMENT) === */
-document.addEventListener("DOMContentLoaded", () => {
+        /* === PARTICULES + RADAR POUR L'INTERFACE GRAPHIQUE (DARKMODE SEULEMENT) === */
+        document.addEventListener("DOMContentLoaded", () => {
 
-    // On vérifie que les éléments existent
-    const canvas = document.getElementById("particles-interface");
-    if (!canvas) return;
+            // On vérifie que les éléments existent
+            const canvas = document.getElementById("particles-interface");
+            if (!canvas) return;
 
-    // On active uniquement en darkmode
-    if (!document.body.classList.contains("dark")) {
-        canvas.style.display = "none";
-        return;
-    }
+            // On active uniquement en darkmode
+            if (!document.body.classList.contains("dark")) {
+                canvas.style.display = "none";
+                return;
+            }
 
-    const ctx = canvas.getContext("2d");
+            const ctx = canvas.getContext("2d");
 
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    resize();
-    window.addEventListener("resize", resize);
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener("resize", resize);
 
-    let particles = [];
-    const total = 45;
+            let particles = [];
+            const total = 45;
 
-    for (let i = 0; i < total; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            r: Math.random() * 2 + 1,
-            dx: Math.random() * 0.4 - 0.2,
-            dy: Math.random() * 0.4 - 0.2,
+            for (let i = 0; i < total; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 2 + 1,
+                    dx: Math.random() * 0.4 - 0.2,
+                    dy: Math.random() * 0.4 - 0.2,
+                });
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(59,130,246,0.5)";
+                    ctx.fill();
+
+                    p.x += p.dx;
+                    p.y += p.dy;
+
+                    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+                });
+
+                requestAnimationFrame(animateParticles);
+            }
+
+            animateParticles();
         });
-    }
+        /* === PARTICULES POUR GUI EN DARKMODE === */
+        function initGUIParticles() {
+            const canvas = document.createElement('canvas');
+            canvas.id = 'particles-gui';
+            document.body.appendChild(canvas);
 
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const total = 40;
 
-        particles.forEach(p => {
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = "rgba(59,130,246,0.5)";
-            ctx.fill();
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
 
-            p.x += p.dx;
-            p.y += p.dy;
+            // Créer les particules
+            for (let i = 0; i < total; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 2 + 1,
+                    dx: Math.random() * 0.4 - 0.2,
+                    dy: Math.random() * 0.4 - 0.2,
+                });
+            }
 
-            if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-            if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-        });
+            function animate() {
+                if (!document.body.classList.contains('dark') ||
+                    document.getElementById('gui-container').classList.contains('hidden')) {
+                    requestAnimationFrame(animate);
+                    return;
+                }
 
-        requestAnimationFrame(animateParticles);
-    }
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    animateParticles();
-});
-</script>
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(59,130,246,0.5)"; /* Bleu comme page sélection */
+                    ctx.fill();
+
+                    p.x += p.dx;
+                    p.y += p.dy;
+
+                    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // Initialiser les particules GUI au chargement
+        document.addEventListener('DOMContentLoaded', initGUIParticles);
+        console.log("GUI Container:", document.getElementById("gui-container"));
+        console.log("Dark mode?", document.body.classList.contains("dark"));
+    </script>
 
 </body>
 
