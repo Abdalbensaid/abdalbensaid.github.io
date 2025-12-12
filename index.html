@@ -598,36 +598,40 @@
             overflow: hidden !important;
         }
 
-      /* Timeline vertical line - Blue neon effect */
-.timeline-vertical-line , .timeline-horizontal-line{
-    transition: all 0.5s ease;
-}
+        /* Timeline vertical line - Blue neon effect */
+        .timeline-vertical-line,
+        .timeline-horizontal-line {
+            transition: all 0.5s ease;
+        }
 
-.dark .timeline-vertical-line, .dark .timeline-horizontal-line {
-    background: linear-gradient(
-        to bottom,
-        transparent,
-        rgba(59, 130, 246, 0.6),
-        transparent
-    ) !important;
-    box-shadow: 
-        0 0 15px rgba(59, 130, 246, 0.5),
-        0 0 30px rgba(59, 130, 246, 0.3);
-}
+        .dark .timeline-vertical-line,
+        .dark .timeline-horizontal-line {
+            background: linear-gradient(to bottom,
+                    transparent,
+                    rgba(59, 130, 246, 0.6),
+                    transparent) !important;
+            box-shadow:
+                0 0 15px rgba(59, 130, 246, 0.5),
+                0 0 30px rgba(59, 130, 246, 0.3);
+        }
 
-/* Animation de pulsation */
-@keyframes timeline-pulse {
-    0%, 100% {
-        opacity: 0.7;
-    }
-    50% {
-        opacity: 1;
-    }
-}
+        /* Animation de pulsation */
+        @keyframes timeline-pulse {
 
-.dark .timeline-vertical-line, .dark .timeline-horizontal-line {
-    animation: timeline-pulse 3s ease-in-out infinite;
-}
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .dark .timeline-vertical-line,
+        .dark .timeline-horizontal-line {
+            animation: timeline-pulse 3s ease-in-out infinite;
+        }
 
         #terminal-input {
             caret-color: #00ff00;
@@ -1005,7 +1009,7 @@
 
 
     <div id="terminal-container" class="hidden"></div>
-    <div id="gui-container" class="hidden container mx-auto max-w-6xl px-6 lg:px-12 py-8 relative">
+    <div id="gui-container" class="hidden container mx-auto w-full max-w-6xl px-6 lg:px-12 py-8 relative">
         <!-- EFFETS DE FOND EN DARKMODE -->
         <div class="darkmode-gui-effects hidden dark:block fixed inset-0 -z-10 pointer-events-none">
             <!-- Radar -->
@@ -1495,109 +1499,109 @@
                 </div>
             </section>
         </main>
+
+        <section class="mt-20 mx-auto max-w-4xl px-4 mb-20 " id="Contactez-moi">
+            <h2 class="text-2xl font-black mb-12 text-center uppercase tracking-wide">
+                Contactez-moi
+            </h2>
+            <form id="contact-form"
+                class="bg-white border-2 border-black rounded-xl p-8 shadow-hard space-y-6 transition-transform hover:scale-[1.02]">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block font-bold text-sm mb-2" for="name">Nom</label>
+                        <input
+                            class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                            type="text" id="name" name="name" placeholder="Votre nom" required>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-sm mb-2" for="email">Email</label>
+                        <input
+                            class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                            type="email" id="email" name="email" placeholder="Votre email" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-sm mb-2" for="subject">Objet</label>
+                    <input
+                        class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                        type="text" id="subject" name="subject" placeholder="Objet du message" required>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-sm mb-2" for="message">Message</label>
+                    <textarea
+                        class="w-full border-2 border-black rounded-lg p-3 h-32 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+                        id="message" name="message" placeholder="Votre message..." required></textarea>
+                </div>
+
+                <button type="submit" id="btn-submit"
+                    class="bg-accent-teal text-white font-bold py-3 px-6 rounded-xl shadow-hard hover:bg-teal-400 transition-colors w-full">
+                    Envoyer le message
+                </button>
+                <p id="form-status" class="text-center text-sm font-bold mt-2 hidden"></p>
+            </form>
+
+            <script>
+                document.getElementById('contact-form').addEventListener('submit', function (event) {
+                    event.preventDefault();
+
+                    const btn = document.getElementById('btn-submit');
+                    const status = document.getElementById('form-status');
+                    const form = this;
+
+                    btn.innerText = 'Envoi en cours...';
+
+                    // 1. VOS IDs (À REMPLACER)
+                    const serviceID = 'service_0f71uyc';
+                    const templateAdminID = 'template_de284b5'; // Celui qui vous notifie
+                    const templateAutoReplyID = 'template_uxqylb7'; // Le nouveau pour le client
+
+                    // 2. Envoi du mail à VOUS (Admin)
+                    emailjs.sendForm(serviceID, templateAdminID, form)
+                        .then(() => {
+                            // 3. Si succès, envoi de l'auto-réponse au CLIENT
+                            // On récupère les valeurs du formulaire pour l'envoyer manuellement
+                            const userEmail = document.getElementById('email').value;
+                            const userName = document.getElementById('name').value;
+
+                            // Params pour l'auto-reply
+                            const autoReplyParams = {
+                                name: userName,
+                                email: userEmail,
+                                // Ajoutez d'autres variables si besoin
+                            };
+
+                            return emailjs.send(serviceID, templateAutoReplyID, autoReplyParams);
+                        })
+                        .then(() => {
+                            // 4. Tout est fini avec succès
+                            btn.innerText = 'Envoyé !';
+                            btn.classList.replace('bg-accent-teal', 'bg-green-500');
+                            status.innerText = "Message reçu ! nous vous recontacterons sous peu.";
+                            status.classList.remove('hidden', 'text-red-500');
+                            status.classList.add('text-green-600');
+                            form.reset();
+
+                            setTimeout(() => {
+                                btn.innerText = 'Envoyer le message';
+                                btn.classList.replace('bg-green-500', 'bg-accent-teal');
+                                status.classList.add('hidden');
+                            }, 6000);
+                        })
+                        .catch((err) => {
+                            btn.innerText = 'Erreur';
+                            btn.classList.replace('bg-accent-teal', 'bg-red-500');
+                            status.innerText = "Une erreur est survenue.";
+                            status.classList.remove('hidden', 'text-green-600');
+                            status.classList.add('text-red-500');
+                            console.error('Erreur EmailJS:', err);
+                        });
+                });
+            </script>
+        </section>
+
     </div>
-    <section class="mt-20 mx-auto max-w-4xl px-4 mb-20 " id="Contactez-moi">
-        <h2 class="text-2xl font-black mb-12 text-center uppercase tracking-wide">
-            Contactez-moi
-        </h2>
-        <form id="contact-form"
-            class="bg-white border-2 border-black rounded-xl p-8 shadow-hard space-y-6 transition-transform hover:scale-[1.02]">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block font-bold text-sm mb-2" for="name">Nom</label>
-                    <input
-                        class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                        type="text" id="name" name="name" placeholder="Votre nom" required>
-                </div>
-                <div>
-                    <label class="block font-bold text-sm mb-2" for="email">Email</label>
-                    <input
-                        class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                        type="email" id="email" name="email" placeholder="Votre email" required>
-                </div>
-            </div>
-
-            <div>
-                <label class="block font-bold text-sm mb-2" for="subject">Objet</label>
-                <input
-                    class="w-full border-2 border-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                    type="text" id="subject" name="subject" placeholder="Objet du message" required>
-            </div>
-
-            <div>
-                <label class="block font-bold text-sm mb-2" for="message">Message</label>
-                <textarea
-                    class="w-full border-2 border-black rounded-lg p-3 h-32 focus:outline-none focus:ring-2 focus:ring-accent-teal"
-                    id="message" name="message" placeholder="Votre message..." required></textarea>
-            </div>
-
-            <button type="submit" id="btn-submit"
-                class="bg-accent-teal text-white font-bold py-3 px-6 rounded-xl shadow-hard hover:bg-teal-400 transition-colors w-full">
-                Envoyer le message
-            </button>
-            <p id="form-status" class="text-center text-sm font-bold mt-2 hidden"></p>
-        </form>
-
-        <script>
-            document.getElementById('contact-form').addEventListener('submit', function (event) {
-                event.preventDefault();
-
-                const btn = document.getElementById('btn-submit');
-                const status = document.getElementById('form-status');
-                const form = this;
-
-                btn.innerText = 'Envoi en cours...';
-
-                // 1. VOS IDs (À REMPLACER)
-                const serviceID = 'service_0f71uyc';
-                const templateAdminID = 'template_de284b5'; // Celui qui vous notifie
-                const templateAutoReplyID = 'template_uxqylb7'; // Le nouveau pour le client
-
-                // 2. Envoi du mail à VOUS (Admin)
-                emailjs.sendForm(serviceID, templateAdminID, form)
-                    .then(() => {
-                        // 3. Si succès, envoi de l'auto-réponse au CLIENT
-                        // On récupère les valeurs du formulaire pour l'envoyer manuellement
-                        const userEmail = document.getElementById('email').value;
-                        const userName = document.getElementById('name').value;
-
-                        // Params pour l'auto-reply
-                        const autoReplyParams = {
-                            name: userName,
-                            email: userEmail,
-                            // Ajoutez d'autres variables si besoin
-                        };
-
-                        return emailjs.send(serviceID, templateAutoReplyID, autoReplyParams);
-                    })
-                    .then(() => {
-                        // 4. Tout est fini avec succès
-                        btn.innerText = 'Envoyé !';
-                        btn.classList.replace('bg-accent-teal', 'bg-green-500');
-                        status.innerText = "Message reçu ! nous vous recontacterons sous peu.";
-                        status.classList.remove('hidden', 'text-red-500');
-                        status.classList.add('text-green-600');
-                        form.reset();
-
-                        setTimeout(() => {
-                            btn.innerText = 'Envoyer le message';
-                            btn.classList.replace('bg-green-500', 'bg-accent-teal');
-                            status.classList.add('hidden');
-                        }, 6000);
-                    })
-                    .catch((err) => {
-                        btn.innerText = 'Erreur';
-                        btn.classList.replace('bg-accent-teal', 'bg-red-500');
-                        status.innerText = "Une erreur est survenue.";
-                        status.classList.remove('hidden', 'text-green-600');
-                        status.classList.add('text-red-500');
-                        console.error('Erreur EmailJS:', err);
-                    });
-            });
-        </script>
-    </section>
-
-
     <script>
         /* === Typing Effect Logo === */
         const logoText = "ABDOUL WAHAB";
