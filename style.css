@@ -151,7 +151,7 @@
     animation-delay: 0.3s;
 }
 
-/* Radar */
+/* Radar
 @keyframes radar {
     0% {
         transform: rotate(0deg);
@@ -163,7 +163,7 @@
 
 .animate-radar {
     animation: radar 8s linear infinite;
-}
+} */
 
 /* 3D tilt effect */
 .card-3d {
@@ -188,18 +188,18 @@
 }
 
 /* Radar rotation */
-@keyframes radar-spin {
+/* @keyframes radar-spin {
     0% {
         transform: rotate(0deg);
     }
     100% {
         transform: rotate(360deg);
     }
-}
+} */
 
-.animate-radar {
+/* .animate-radar {
     animation: radar-spin 12s linear infinite;
-}
+} */
 
 /* Le canvas ne doit pas gêner les clics */
 #particles-interface {
@@ -291,7 +291,7 @@
 }
 
 /* Radar pour GUI */
-.dark #gui-container::after {
+/* .dark #gui-container::after {
     content: "";
     position: fixed;
     left: 50%;
@@ -304,7 +304,7 @@
     opacity: 0.1;
     animation: radar 12s linear infinite;
     z-index: -1;
-}
+} */
 
 /* Particules pour GUI */
 #particles-gui {
@@ -356,7 +356,7 @@
 }
 
 /* Effet scan radar pour le container */
-#gui-container::before {
+/* #gui-container::before {
     content: '';
     position: absolute;
     top: 0;
@@ -371,7 +371,7 @@
     );
     animation: scan 3s linear infinite;
     z-index: 10;
-}
+} */
 
 @keyframes scan {
     0% {
@@ -424,10 +424,10 @@
 }
 
 /* Animation radar spécifique pour GUI */
-.dark #gui-container .animate-radar {
+/* .dark #gui-container .animate-radar {
     animation: radar-spin 8s linear infinite;
     border-color: rgba(0, 255, 128, 0.3);
-}
+} */
 
 /* Effet de pulsing pour les points */
 @keyframes pulse-glow {
