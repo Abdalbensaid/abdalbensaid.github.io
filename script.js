@@ -31,23 +31,25 @@ function chooseMode(mode) {
 }
 
 function returnToModeSelection() {
-  // Cacher tout
+  // Cacher le contenu GUI
   document.getElementById("gui-container").classList.add("hidden");
+
+  // ✅ Cacher la navigation (Important car elle est maintenant hors du container)
+  document.getElementById("gui-nav").classList.add("hidden");
+
+  // Cacher le terminal
   document.getElementById("terminal-container").classList.add("hidden");
 
-  // Nettoyer le terminal (important !)
+  // Nettoyer le terminal
   const terminalContainer = document.getElementById("terminal-container");
   if (terminalContainer) {
     terminalContainer.innerHTML = "";
   }
 
-  // Afficher les effets darkmode (si cachés)
+  // Afficher les effets et la page de sélection
   document.getElementById("darkmode-effects").classList.remove("hidden");
-
-  // Afficher la page de sélection
   document.getElementById("mode-selection-page").classList.remove("hidden");
 
-  // Sauvegarder le choix
   localStorage.setItem("app-mode", "selection");
 }
 
@@ -659,6 +661,9 @@ function setMode(mode) {
       term.innerHTML = "";
     }
     if (gui) gui.classList.remove("hidden");
+
+    // ✅ AJOUTER CETTE LIGNE : Afficher la nav quand on lance le mode GUI
+    document.getElementById("gui-nav").classList.remove("hidden");
 
     /* === Correction : lancer les particules GUI === */
     if (typeof initGUIParticles === "function") {
