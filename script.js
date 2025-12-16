@@ -281,7 +281,7 @@ function createTerminalShell() {
   const about = data.about || {};
 
   term.innerHTML = `
-        <div id="terminal-shell" style="height:100vh" class="w-full h-screen bg-black text-green-400 p-4 font-mono text-sm overflow-auto">
+        <div id="terminal-shell" style="height:100vh; padding-bottom: 100px" class="w-full h-screen bg-black text-green-400 p-4 font-mono text-sm overflow-auto">
             <!-- En-tête personnalisé avec vos informations -->
             <div class="text-center mb-6">
                 <div class="text-cyan-300 text-lg font-bold mb-2">${
