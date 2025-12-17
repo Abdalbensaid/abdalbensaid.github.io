@@ -633,6 +633,51 @@ function truncate(str, n) {
   return str.length > n ? str.slice(0, n) + "…" : str;
 }
 
+// ===============================================
+// CORRECTION SCROLL MOBILE POUR LE TERMINAL
+// ===============================================
+
+function scrollToBottom() {
+    const terminal = document.getElementById('terminal-container');
+    if (terminal && !terminal.classList.contains('hidden')) {
+        // Faire défiler le conteneur du terminal jusqu'en bas
+        terminal.scrollTop = terminal.scrollHeight;
+        
+        // Trouver et faire défiler l'input actif
+        const input = terminal.querySelector('input[type="text"]:focus');
+        if (input) {
+            // Utiliser scrollIntoView sur l'input pour s'assurer qu'il est visible au-dessus du clavier
+            setTimeout(() => {
+                input.scrollIntoView({ behavior: "smooth", block: "end" });
+            }, 100); 
+        }
+    }
+}
+
+// Observation des changements (ajout de nouvelles lignes de commande)
+const terminalContainer = document.getElementById('terminal-container');
+if (terminalContainer) {
+    const observer = new MutationObserver(scrollToBottom);
+    observer.observe(terminalContainer, { childList: true, subtree: true });
+
+    // Observation de l'apparition du clavier virtuel (changement de taille du viewport visuel)
+    // C'est la méthode la plus fiable pour détecter le clavier sur mobile.
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+            setTimeout(scrollToBottom, 200); // Délai pour laisser le clavier se déployer
+        });
+    }
+
+    // Gérer les clics pour forcer le focus et le scroll (méthode de secours)
+    terminalContainer.addEventListener('click', () => {
+        const input = terminalContainer.querySelector('input');
+        if (input) {
+            input.focus();
+            setTimeout(scrollToBottom, 200);
+        }
+    });
+}
+
 /* ============================================================
        🖥 MODE GUI / TERMINAL
     ============================================================ */
