@@ -95,7 +95,8 @@
     </div>
 
     <!-- TERMINAL CONTAINER -->
-    <div id="terminal-container" class="hidden h-[100dvh] overflow-y-auto pb-80 bg-[#111] text-green-400 font-mono text-sm p-4"></div>
+    <div id="terminal-container"
+        class="hidden h-[100dvh] overflow-y-auto pb-80 bg-[#111] text-green-400 font-mono text-sm p-4"></div>
     <!-- GUI NAV -->
     <nav id="gui-nav" class="hidden absolute top-6 right-6 z-[9999]">
 
@@ -292,6 +293,32 @@
                 <p id="form-status" class="text-center text-sm font-bold mt-2 hidden"></p>
             </form>
         </section>
+        <!-- ===============================
+        🪟 MODAL DÉTAILS (GLOBAL)
+        ================================ -->
+        <div id="details-modal" class="fixed inset-0 z-[999] hidden">
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
+
+            <!-- Modal -->
+            <div class="relative max-w-2xl w-[92%] mx-auto mt-20 bg-white dark:bg-gray-900
+              border-2 border-black dark:border-gray-700 rounded-2xl shadow-hard p-6
+              animate-scaleIn">
+
+                <div class="flex justify-between items-start mb-4">
+                    <h2 id="modal-title" class="text-xl font-black uppercase"></h2>
+                    <button onclick="closeModal()" class="text-xl font-black hover:rotate-90 transition-transform">
+                        ✕
+                    </button>
+                </div>
+
+                <p id="modal-desc" class="text-gray-700 dark:text-gray-300 mb-4"></p>
+
+                <!-- Sections dynamiques -->
+                <div id="modal-content" class="space-y-4"></div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Script EmailJS pour le formulaire de contact -->

@@ -1,67 +1,212 @@
 {
-    "about": {
-        "name": "Ouedraogo Abdoul Wahab",
-        "avatar": "https://github.com/oabdoulwahab.png",
-        "job": "Développeur Web et Mobile",
-        "location": "Abidjan, Côte d'Ivoire",
-        "bio": "Je suis Ouedraogo Abdoul Wahab, développeur Full-Stack passionné par la création d'applications web et mobiles performantes. Basé à Abidjan, je transforme les idées complexes en solutions numériques concrètes.",
-        "details": "Spécialisé en Laravel, React.js, React Native et bases de données MySQL, je suis aussi à l'aise avec les outils comme Git, Figma et Postman.",
-        "typing_phrases": [
-            "Passionné par la création d'expériences numériques.",
-            "Backend solide avec PHP/Laravel.",
-            "Frontend dynamique avec ReactJS.",
-            "Applications mobiles fluides avec React Native."
-        ]
-    },
-    "skills": [
-        { "name": "Backend", "icon": "terminal", "color": "text-blue-600" },
-        { "name": "Frontend", "icon": "code", "color": "text-yellow-500" },
-        { "name": "Mobile", "icon": "smartphone", "color": "text-pink-500" },
-        { "name": "MySQL", "icon": "database", "color": "text-green-600" },
-        { "name": "Git", "icon": "hub", "color": "text-gray-700" },
-        { "name": "Figma", "icon": "design_services", "color": "text-purple-600" }
-    ],
-    "tools": [
-        {"name":"VSCode", "img":"vsc.avif"}, {"name":"Git", "img":"git.png"}, {"name":"GitHub", "img":"github.png"}, {"name":"MySQL", "img":"mysql.png"}, {"name":"Figma", "img":"figma.png"}, {"name":"Postman", "img":"postman.png"}
-    ],
-    "projects": [
-        { "title": "CMS Blog", "desc": "Gestion de contenu complet", "icon": "article", "bg": "bg-teal-50" },
-        { "title": "E-commerce", "desc": "Boutique en ligne", "icon": "shopping_cart", "bg": "bg-orange-50" },
-        { "title": "Portfolio", "desc": "Site personnel", "icon": "folder", "bg": "bg-blue-50" },
-        { "title": "Chat App", "desc": "Temps réel", "icon": "chat", "bg": "bg-purple-50" }
-    ],
-    "experience": [
-        {
-            "year": "2022-2024",
-            "title": "DÉVELOPPEUR BACKEND / LARAVEL",
-            "duration": "2 ans d'expérience",
-            "desc": "Développement et maintenance d'applications web avec Laravel, optimisation des bases de données MySQL et intégration de systèmes de paiement.",
-            "rotation": "-rotate-2",
-            "bg_year": "bg-accent-teal text-white"
-        },
-        {
-            "year": "2021-2022",
-            "title": "DÉVELOPPEUR FRONTEND / REACT.JS",
-            "duration": "1 an d'expérience",
-            "desc": "Création d'interfaces web dynamiques et réactives, amélioration de l'expérience utilisateur et intégration avec le backend.",
-            "rotation": "rotate-1",
-            "bg_year": "bg-white text-blue-500"
-        },
-        {
-            "year": "2021",
-            "title": "DÉVELOPPEUR MOBILE / REACT NATIVE",
-            "duration": "6 mois d'expérience",
-            "desc": "Développement d'applications mobiles multiplateformes et intégration de fonctionnalités temps réel.",
-            "rotation": "-rotate-1",
-            "bg_year": "bg-white text-black"
-        },
-        {
-            "year": "2024",
-            "title": "DÉVELOPPEUR FULL-STACK FREELANCE",
-            "duration": "",
-            "desc": "Réalisation de projets web et mobile pour des clients variés, du cahier des charges à la livraison finale.",
-            "rotation": "rotate-2",
-            "bg_year": "bg-accent-teal text-white"
-        }
+  "about": {
+    "name": "Ouedraogo Abdoul Wahab",
+    "avatar": "https://github.com/oabdoulwahab.png",
+    "job": "Développeur Web et Mobile",
+    "location": "Abidjan, Côte d'Ivoire",
+    "bio": "Je ne vends pas du code, je construis des solutions digitales utiles et orientées résultats. Chaque projet commence par un problème réel et se termine par un produit fiable, pensé pour durer.",
+    "details": "Développeur Full-Stack spécialisé en applications web et mobiles, je conçois des plateformes SaaS, des systèmes métiers et des produits digitaux complets avec une approche Product-First : comprendre le besoin, structurer la solution, livrer un produit efficace.",
+    "typing_phrases": [
+      "Je construis des solutions digitales utiles.",
+      "Des produits pensés pour résoudre de vrais problèmes.",
+      "Product-first, pas tool-first.",
+      "Du web et du mobile pensés pour durer.",
+      "Simple, efficace, orienté impact."
     ]
+  },
+  "skills": [
+    {
+      "name": "Développement Backend",
+      "icon": "terminal",
+      "color": "text-blue-600",
+      "details": [
+        "Conception d’APIs robustes avec Laravel",
+        "Gestion de la logique métier et règles complexes",
+        "Authentification, rôles et sécurité",
+        "Optimisation des performances des applications",
+        "Maintenabilité et code propre"
+      ]
+    },
+    {
+      "name": "Applications Web",
+      "icon": "code",
+      "color": "text-yellow-500",
+      "details": [
+        "Interfaces dynamiques et responsives avec React.js",
+        "Connexion frontend ↔ backend",
+        "Gestion d’états et logique UI complexe",
+        "Expérience utilisateur claire et intuitive",
+        "Développement de plateformes SaaS orientées usage réel"
+      ]
+    },
+    {
+      "name": "Applications Mobile",
+      "icon": "smartphone",
+      "color": "text-pink-500",
+      "details": [
+        "Applications mobiles multiplateformes (Flutter / React Native)",
+        "Intégration temps réel et APIs backend",
+        "Optimisation pour usage quotidien",
+        "Fonctionnalités de géolocalisation et suivi en temps réel",
+        "Déploiement prêt production et App Store / Play Store"
+      ]
+    },
+    {
+      "name": "Bases de Données",
+      "icon": "database",
+      "color": "text-green-600",
+      "details": [
+        "Modélisation et optimisation de bases MySQL",
+        "Gestion des relations et sécurité des données",
+        "Requêtes performantes et fiables",
+        "Maintenance et scalabilité",
+        "Cohérence et intégrité des données"
+      ]
+    },
+    {
+      "name": "Conception Produit & SaaS",
+      "icon": "design_services",
+      "color": "text-purple-600",
+      "details": [
+        "Analyse des besoins utilisateurs et business",
+        "Approche Product-First pour chaque projet",
+        "Structuration de solutions claires et modulaires",
+        "Prototypage rapide et tests fonctionnels",
+        "Vision long terme et évolutive du produit"
+      ]
+    }
+  ],
+
+  "tools": [
+    { "name": "VSCode", "img": "vsc.avif" },
+    { "name": "Git", "img": "git.png" },
+    { "name": "GitHub", "img": "github.png" },
+    { "name": "MySQL", "img": "mysql.png" },
+    { "name": "Figma", "img": "figma.png" },
+    { "name": "Postman", "img": "postman.png" }
+  ],
+
+  "projects": [
+    {
+      "title": "djagoBot ",
+      "desc": "Bot de vente sur Telegram / WhatsApp pour commerçants. Plateforme SaaS pour gérer produits et commandes",
+      "icon": "smart_toy",
+      "bg": "bg-yellow-50",
+      "details": {
+        "problem": "Les petits commerçants n’avaient pas de solution simple pour publier leurs produits et recevoir des commandes directement depuis Telegram ou WhatsApp.",
+        "solution": "Création d’un bot SaaS permettant l’inscription, la publication de produits, la gestion des commandes et les paiements/retraits via Mobile Money.",
+        "impact": "Simplifie la vente en ligne pour les commerçants et facilite l’achat direct pour les clients."
+      }
+    },
+    {
+      "title": "Dashboard SaaS - DjagoBot",
+      "desc": "Tableau de bord de djagoBot avancé pour les commerçants et administrateurs",
+      "icon": "dashboard",
+      "bg": "bg-teal-50",
+      "details": {
+        "problem": "Les commerçants avaient besoin d’un tableau de bord avancé pour suivre leur activité et gérer la plateforme.",
+        "solution": "Tableau de bord avancé avec statistiques, retraits, gestion des commissions et frais de transaction.",
+        "impact": "Permet aux commerçants de suivre leur activité et aux administrateurs de gérer la plateforme efficacement."
+      }
+    },
+    {
+      "title": "Go-delivery",
+      "desc": "Géolocalisation dynamique et suivi des commandes",
+      "icon": "location_on",
+      "bg": "bg-green-50",
+      "details": {
+        "problem": "Les entreprises de livraison avaient besoin de suivre leurs livreurs et de géolocaliser les commandes en temps réel.",
+        "solution": "Application web et mobile avec Google Maps et WebSockets pour géolocalisation dynamique et suivi en temps réel.",
+        "impact": "Optimise la logistique, réduit les erreurs de livraison et améliore l’expérience client."
+      }
+    },
+    {
+      "title": "Bot de prospection Telegram",
+      "desc": "Automatisation de la prospection et du contact client",
+      "icon": "support_agent",
+      "bg": "bg-purple-50",
+      "details": {
+        "problem": "Les entreprises voulaient automatiser la prospection et le contact client sur Telegram.",
+        "solution": "Bot capable de rechercher des prospects, envoyer des messages personnalisés et gérer les réponses automatiquement.",
+        "impact": "Accélère le processus de prospection, augmente l’efficacité commerciale et réduit le travail manuel."
+      }
+    },
+    {
+      "title": "Applications mobiles multiplateformes",
+      "desc": "Applications mobiles iOS et Android pour clients",
+      "icon": "smartphone",
+      "bg": "bg-pink-50",
+      "details": {
+        "problem": "Les clients avaient besoin d’applications mobiles performantes et compatibles iOS et Android.",
+        "solution": "Développement d’applications mobiles avec connexion API, fonctionnalités temps réel et interface optimisée.",
+        "impact": "Offre aux utilisateurs une expérience fluide et cohérente sur tous les appareils, prête pour le déploiement production."
+      }
+    }
+  ],
+  "experience": [
+    {
+      "year": "2022-2024",
+      "title": "DÉVELOPPEUR BACKEND / LARAVEL",
+      "duration": "2 ans d'expérience",
+      "desc": "Développement et maintenance d'applications web avec Laravel, optimisation des bases de données MySQL et conception d'APIs robustes pour projets SaaS.",
+      "details": {
+        "role": "Développement et maintenance d'applications web avec Laravel",
+        "tasks": [
+          "Optimisation des bases de données MySQL",
+          "Intégration de systèmes de paiement",
+          "Conception d'APIs robustes pour les projets SaaS"
+        ]
+      },
+      "rotation": "-rotate-2",
+      "bg_year": "bg-accent-teal text-white"
+    },
+    {
+      "year": "2021-2022",
+      "title": "DÉVELOPPEUR FRONTEND / REACT.JS",
+      "duration": "1 an d'expérience",
+      "desc": "Création d'interfaces web dynamiques et réactives, amélioration de l'expérience utilisateur et développement de dashboards interactifs.",
+      "details": {
+        "role": "Création d'interfaces web dynamiques et réactives",
+        "tasks": [
+          "Amélioration de l'expérience utilisateur",
+          "Intégration avec le backend Laravel",
+          "Développement de dashboards interactifs"
+        ]
+      },
+      "rotation": "rotate-1",
+      "bg_year": "bg-white text-blue-500"
+    },
+    {
+      "year": "2021",
+      "title": "DÉVELOPPEUR MOBILE / REACT NATIVE",
+      "duration": "6 mois d'expérience",
+      "desc": "Développement d'applications mobiles multiplateformes avec intégration de fonctionnalités temps réel et optimisation UX mobile.",
+      "details": {
+        "role": "Développement d'applications mobiles multiplateformes",
+        "tasks": [
+          "Intégration de fonctionnalités temps réel",
+          "Connexion aux APIs backend",
+          "Optimisation UX mobile"
+        ]
+      },
+      "rotation": "-rotate-1",
+      "bg_year": "bg-white text-black"
+    },
+    {
+      "year": "2024",
+      "title": "DÉVELOPPEUR FULL-STACK FREELANCE",
+      "duration": "",
+      "desc": "Réalisation de projets web et mobile pour clients variés, du cahier des charges à la livraison finale.",
+      "details": {
+        "role": "Réalisation de projets web et mobile pour clients variés",
+        "tasks": [
+          "Du cahier des charges à la livraison finale",
+          "Développement backend, frontend et mobile",
+          "Assistance sur la conception produit et UX"
+        ]
+      },
+      "rotation": "rotate-2",
+      "bg_year": "bg-accent-teal text-white"
+    }
+  ]
 }

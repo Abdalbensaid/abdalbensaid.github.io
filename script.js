@@ -23,21 +23,13 @@ function toggleTheme() {
 
 function chooseMode(mode) {
   document.getElementById("mode-selection-page").classList.add("hidden");
-  if (mode === "terminal") {
-    setMode("terminal");
-  } else {
-    setMode("gui");
-  }
+  setMode(mode);
 }
 
 function returnToModeSelection() {
-  // Cacher le contenu GUI
+  // Cacher les containers
   document.getElementById("gui-container").classList.add("hidden");
-
-  // ✅ Cacher la navigation (Important car elle est maintenant hors du container)
   document.getElementById("gui-nav").classList.add("hidden");
-
-  // Cacher le terminal
   document.getElementById("terminal-container").classList.add("hidden");
 
   // Nettoyer le terminal
@@ -46,7 +38,7 @@ function returnToModeSelection() {
     terminalContainer.innerHTML = "";
   }
 
-  // Afficher les effets et la page de sélection
+  // Afficher la sélection
   document.getElementById("darkmode-effects").classList.remove("hidden");
   document.getElementById("mode-selection-page").classList.remove("hidden");
 
@@ -59,126 +51,262 @@ function returnToModeSelection() {
 
 function generateMobileExperience() {
   const data = window.portfolioData;
-  if (!data || !data.experience) return;
+  if (!data?.experience) return;
 
   const mobileContainer = document.getElementById("experience-mobile");
   if (!mobileContainer) return;
 
-  const expHTML = data.experience
-    .map(
-      (exp, index) => `
-        <div class="bg-white border-2 border-black rounded-xl p-4 md:p-6 shadow-hard animate-slideUp" 
+  mobileContainer.innerHTML = data.experience
+    .map((exp, index) => {
+      // Déterminer l'icône en fonction du type d'expérience
+      let icon = "work";
+      if (exp.title.includes("MOBILE")) icon = "smartphone";
+      else if (exp.title.includes("FRONTEND")) icon = "code";
+      else if (exp.title.includes("BACKEND")) icon = "terminal";
+      else if (exp.title.includes("FREELANCE")) icon = "business_center";
+
+      return `
+        <div class="bg-white border-2 border-black rounded-xl p-4 md:p-6 shadow-hard animate-slideUp cursor-pointer hover:scale-[1.02] transition-transform"
+             onclick="showExperienceDetails(${index})"
              style="animation-delay: ${index * 100}ms">
-            <div class="text-sm font-black px-3 py-1 border-2 border-black shadow-hard-sm inline-block mb-3 ${
-              exp.bg_year
-            }">
-                ${exp.year}
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-lg ${
+                      exp.bg_year
+                    }">
+                        <span class="material-symbols-outlined">${icon}</span>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <div class="text-sm font-black px-2 py-1 border-2 border-black shadow-hard-sm ${
+                          exp.bg_year
+                        }">
+                            ${exp.year}
+                        </div>
+                        ${
+                          exp.duration
+                            ? `<span class="text-xs font-bold text-gray-500">${exp.duration}</span>`
+                            : ""
+                        }
+                    </div>
+                    <h3 class="font-black text-base md:text-lg uppercase mb-2">${
+                      exp.title
+                    }</h3>
+                    <p class="text-gray-700 text-sm leading-relaxed">${
+                      exp.desc || exp.details?.role || ""
+                    }</p>
+                    <div class="mt-3 text-xs text-accent-teal font-bold flex items-center gap-1">
+                        <span>Cliquer pour voir les détails</span>
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </div>
+                </div>
             </div>
-            <p class="font-black text-base md:text-lg uppercase">${
-              exp.title
-            }</p>
-            ${
-              exp.duration
-                ? `<p class="text-xs font-bold text-gray-500 mt-1">(${exp.duration})</p>`
-                : ""
-            }
-            <p class="text-gray-700 mt-2 text-sm">${exp.desc}</p>
         </div>
+        `;
+    })
+    .join("");
+}
+
+function showExperienceDetails(index) {
+  const exp = window.portfolioData?.experience?.[index];
+  if (!exp?.details) return;
+
+  openModal({
+    title: exp.title,
+    desc: exp.details.role,
+    sections: [
+      {
+        label: "Responsabilités clés",
+        value: `<ul class="list-disc ml-5">
+          ${exp.details.tasks.map(t => `<li>${t}</li>`).join("")}
+        </ul>`
+      }
+    ]
+  });
+}
+
+
+async function loadPortfolioData() {
+  try {
+    const response = await fetch("data.json");
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const data = await response.json();
+    if (data.projects && data.projects.length > 6) {
+      data.projects = data.projects.slice(0, 6);
+    }
+    window.portfolioData = data;
+
+    // Mise à jour des informations personnelles
+    updatePersonalInfo(data);
+
+    // Génération des sections
+    generateSkills(data.skills);
+    generateTools(data.tools);
+    generateProjects(data.projects);
+    generateExperience(data.experience);
+    generateMobileExperience();
+
+    // Effet typing
+    startTypingEffect(data.about.typing_phrases);
+
+    // Restaurer le mode sauvegardé
+    const saved = localStorage.getItem("app-mode") || "selection";
+    setMode(saved);
+  } catch (error) {
+    console.error("Erreur chargement JSON:", error);
+    showErrorMessage();
+  }
+}
+
+function updatePersonalInfo(data) {
+  const about = data.about || {};
+
+  // Informations de base
+  document.getElementById("profile-name").textContent = about.name || "";
+  document.getElementById("profile-job").textContent = about.job || "";
+  document.getElementById("profile-location").textContent =
+    about.location || "";
+
+  // Bio complète
+  const fullBio = `${about.bio || ""} <br><br> ${about.details || ""}`;
+  document.getElementById("about-bio").innerHTML = fullBio;
+
+  // Image de profil
+  const imgElement = document.getElementById("profile-image");
+  if (imgElement && about.avatar) {
+    imgElement.src = about.avatar;
+    imgElement.alt = `Portrait de ${about.name}`;
+  }
+}
+
+function generateSkills(skills = []) {
+  const container = document.getElementById("skills-container");
+  if (!container) return;
+
+  container.innerHTML = skills
+    .map(
+      (skill) => `
+    <div class="flex flex-col items-center bg-white border-2 border-black p-2 md:p-3 rounded-xl shadow-hard hover:-translate-y-1 transition-transform">
+        <div class="${skill.color || "text-gray-600"} mb-1">
+            <span class="material-symbols-outlined text-2xl md:text-3xl">${
+              skill.icon || "code"
+            }</span>
+        </div>
+        <span class="text-xs font-bold uppercase text-center">${
+          skill.name
+        }</span>
+    </div>
     `
     )
     .join("");
-
-  mobileContainer.innerHTML = expHTML;
 }
 
-document.addEventListener("DOMContentLoaded", async function () {
-  try {
-    // 1. On récupère le fichier
-    const response = await fetch("data.json");
-    const data = await response.json();
-    window.portfolioData = data;
+function generateTools(tools = []) {
+  const container = document.getElementById("tools-container");
+  if (!container) return;
 
-    // 2. Remplissage Header & Bio
-    document.getElementById("profile-name").textContent = data.about.name;
-    document.getElementById("profile-job").textContent = data.about.job;
-    document.getElementById("profile-location").textContent =
-      data.about.location;
-
-    // On combine la bio courte et les détails pour la section "À propos"
-    const fullBio = `${data.about.bio} <br><br> ${data.about.details}`;
-    document.getElementById("about-bio").innerHTML = fullBio;
-
-    // Mise à jour de l'image (si l'ID existe)
-    const imgElement = document.getElementById("profile-image");
-    if (imgElement && data.about.avatar) imgElement.src = data.about.avatar;
-
-    // 3. Génération des Compétences (Skills)
-    const skillsContainer = document.getElementById("skills-container");
-    skillsContainer.innerHTML = data.skills
-      .map(
-        (skill) => `
-    <div class="flex flex-col items-center bg-white border-2 border-black p-2 md:p-3 rounded-xl shadow-hard hover:-translate-y-1 transition-transform">
-        <div class="${skill.color} mb-1">
-            <span class="material-symbols-outlined text-2xl md:text-3xl">${skill.icon}</span>
-        </div>
-        <span class="text-xs font-bold uppercase text-center">${skill.name}</span>
-    </div>
-`
-      )
-      .join("");
-
-    // 4. Génération des Outils (Tools)
-    const toolsContainer = document.getElementById("tools-container");
-    toolsContainer.innerHTML = data.tools
-      .map(
-        (tool) => `
+  container.innerHTML = tools
+    .map(
+      (tool) => `
             <div class="w-20 h-20 rounded-full border-3 border-black bg-white shadow-hard flex items-center justify-center font-bold text-sm hover:scale-105 transition-transform">
-                <div class="">
+                <div>
                     <img 
                         src="./tools/${tool.img}" 
                         alt="${tool.name} logo" 
                         class="rounded-full w-full h-full object-contain"
+                        loading="lazy"
                     />
                 </div>
             </div>
         `
-      )
-      .join("");
+    )
+    .join("");
+}
 
-    // 5. Génération des Projets
-    const projectsContainer = document.getElementById("projects-container");
-    projectsContainer.innerHTML = data.projects
-      .map(
-        (project) => `
-            <div class="flex items-center gap-4 bg-white border-2 border-black p-3 rounded-xl shadow-hard-sm">
-                <div class="w-10 h-10 flex items-center justify-center border-2 border-black rounded ${project.bg}">
-                    <span class="material-symbols-outlined">${project.icon}</span>
-                </div>
-                <div>
-                    <h3 class="font-bold text-sm uppercase">${project.title}</h3>
-                    <p class="text-[10px] text-gray-500">${project.desc}</p>
-                </div>
-            </div>
-        `
-      )
-      .join("");
+function generateProjects(projects = []) {
+  const container = document.getElementById("projects-container");
+  if (!container) return;
 
-    // 6. Génération de l'Expérience
-    const expContainer = document.getElementById("experience-container");
-    const verticalLine =
-      '<div class="timeline-vertical-line absolute left-20 top-0 bottom-0 w-1.5 bg-black rounded-full z-0"></div>';
+  // Limiter à 6 projets maximum pour une grille 3x2
+  const displayProjects = projects.slice(0, 6);
 
-    const expHTML = data.experience
-      .map(
-        (exp, index) => `
+  container.innerHTML = displayProjects
+    .map(
+      (project, index) => `
+      <div class="project-card animate-slideUp" 
+           onclick="showProjectDetails(${index})"
+           style="animation-delay: ${index * 30}ms">
+          <div class="project-card-content">
+              <div class="project-header">
+                  <div class="project-icon ${project.bg || "bg-gray-50"}">
+                      <span class="material-symbols-outlined">${
+                        project.icon || "folder"
+                      }</span>
+                  </div>
+                  <div class="project-title">
+                      <h3 title="${project.title}">${project.title}</h3>
+                  </div>
+              </div>
+              
+              <p class="project-desc" title="${project.desc}">${
+        project.desc
+      }</p>
+              
+              ${
+                project.details
+                  ? `
+              <div class="project-footer">
+                  <button class="project-button pointer-events-none">
+                      <span>Détails</span>
+                      <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </button>
+              </div>
+              `
+                  : ""
+              }
+          </div>
+      </div>
+    `
+    )
+    .join("");
+}
+
+window.showProjectDetails = function (index) {
+  const project = window.portfolioData?.projects?.[index];
+  if (!project?.details) return;
+
+  openModal({
+    title: project.title,
+    desc: project.desc,
+    sections: [
+      { label: "Problème", value: project.details.problem },
+      { label: "Solution", value: project.details.solution },
+      { label: "Impact", value: project.details.impact }
+    ]
+  });
+};
+
+
+function generateExperience(experience = []) {
+  const container = document.getElementById("experience-container");
+  if (!container) return;
+
+  const verticalLine =
+    '<div class="timeline-vertical-line absolute left-20 top-0 bottom-0 w-1.5 bg-black rounded-full z-0"></div>';
+
+  const expHTML = experience
+    .map(
+      (exp, index) => `
             <div class="relative pl-10 mb-10 z-20 group animate-slideUp" style="animation-delay: ${
               index * 100
             }ms">
                 <div class="timeline-horizontal-line absolute -left-[14px] top-1/2 -translate-y-1/2 w-10 h-1.5 bg-black rounded-r-none"></div>
                 
                 <div class="absolute -left-28 top-1/2 -translate-y-1/2 text-sm font-black whitespace-nowrap px-2 py-1 border-2 border-black shadow-hard-sm transform ${
-                  exp.rotation
-                } ${exp.bg_year}">
+                  exp.rotation || ""
+                } ${exp.bg_year || "bg-white"}">
                     ${exp.year}
                 </div>
 
@@ -190,42 +318,56 @@ document.addEventListener("DOMContentLoaded", async function () {
                         : ""
                     }
                     <p class="text-gray-700 mt-2">${exp.desc}</p>
+                    
+                    <!-- Bouton Voir détails -->
+                    ${
+                      exp.details
+                        ? `
+                    <button onclick="showExperienceDetails(${index})" 
+                            class="mt-4 flex items-center gap-1 text-xs font-bold text-accent-teal hover:text-teal-600 transition-colors">
+                        <span>Voir les détails</span>
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                    `
+                        : ""
+                    }
                 </div>
             </div>
         `
-      )
-      .join("");
+    )
+    .join("");
 
-    expContainer.innerHTML = verticalLine + expHTML;
+  container.innerHTML = verticalLine + expHTML;
+}
 
-    // 7. Lancement de l'effet "Typing" avec les phrases du JSON
-    startTypingEffect(data.about.typing_phrases);
+function showErrorMessage() {
+  const elements = [
+    "profile-name",
+    "profile-job",
+    "profile-location",
+    "about-bio",
+  ];
 
-    // 8. Génération de l'Expérience Mobile
-    generateMobileExperience();
-  } catch (error) {
-    console.error("Erreur chargement JSON:", error);
-  }
-
-  // Une fois le JSON chargé, on active le mode sauvegardé
-  const saved = localStorage.getItem("app-mode") || "selection";
-  setMode(saved);
-});
+  elements.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = "Données non disponibles";
+  });
+}
 
 /* ============================================================
        ⌨️ TYPING EFFECT
     ============================================================ */
 
-function startTypingEffect(phrases) {
+function startTypingEffect(phrases = []) {
   const typingElement = document.getElementById("typing-text");
-  if (!typingElement) return;
+  if (!typingElement || !phrases.length) return;
 
   let phraseIndex = 0;
   let charIndex = 0;
   let isDeleting = false;
-  const typingSpeed = 70;
-  const deletingSpeed = 40;
-  const pauseTime = 1500;
+  let typingSpeed = 70;
+  let deletingSpeed = 40;
+  const pauseTime = 3500;
 
   function type() {
     const currentPhrase = phrases[phraseIndex];
@@ -260,9 +402,10 @@ function startTypingEffect(phrases) {
 function printToTerminal(text, addNewLine = true) {
   const output = document.getElementById("terminal-output");
   if (!output) return;
+
   const line = document.createElement("div");
-  line.className = "terminal-line font-mono text-sm";
-  line.innerHTML = text + (addNewLine ? "" : "");
+  line.className = "terminal-line font-mono text-sm mb-1";
+  line.innerHTML = text;
   output.appendChild(line);
   output.scrollTop = output.scrollHeight;
 }
@@ -274,15 +417,15 @@ function clearTerminalOutput() {
 
 function createTerminalShell() {
   const term = document.getElementById("terminal-container");
+  if (!term) return;
+
   term.classList.remove("hidden");
 
-  // Récupérer les données depuis le JSON
   const data = window.portfolioData || {};
   const about = data.about || {};
 
   term.innerHTML = `
-        <div id="terminal-shell" style="height:100vh; padding-bottom: 100px" class="w-full h-screen bg-black text-green-400 p-4 font-mono text-sm overflow-auto">
-            <!-- En-tête personnalisé avec vos informations -->
+        <div id="terminal-shell" class="w-full min-h-screen bg-black text-green-400 p-4 font-mono text-sm overflow-auto pb-20">
             <div class="text-center mb-6">
                 <div class="text-cyan-300 text-lg font-bold mb-2">${
                   about.name || "Portfolio Terminal"
@@ -298,7 +441,6 @@ function createTerminalShell() {
                   about.name ? about.name.split(" ")[0] : "Portfolio"
                 } Terminal ~~~~~~~~~~~~~~~~~~~~~~~~</div>
                 
-                <!-- Menu d'options adapté à votre portfolio -->
                 <div class="grid grid-cols-2 gap-2 text-left ml-8 mb-6">
                     <div class="text-green-400">[1] ✓ Afficher Bio</div>
                     <div class="text-green-400">[2] ✓ Compétences</div>
@@ -313,7 +455,6 @@ function createTerminalShell() {
                     <div class="text-green-400">[q] ✓ Quitter</div>
                 </div>
                 
-                <!-- Prompt personnalisé -->
                 <div class="text-yellow-400 font-bold mb-4 border-t border-green-700 pt-2">
                     [${
                       about.name
@@ -324,7 +465,7 @@ function createTerminalShell() {
             </div>
             
             <div id="terminal-output" class="mb-4"></div>
-            <div class="flex gap-2 items-center border-t border-green-800 pt-2">
+            <div class="flex gap-2 items-center border-t border-green-800 pt-2 sticky bottom-0 bg-black">
                 <span class="text-green-300 font-bold">${
                   about.name ? about.name.split(" ")[0].toLowerCase() : "user"
                 }@portfolio</span>
@@ -342,40 +483,35 @@ function createTerminalShell() {
   const input = document.getElementById("terminal-input");
   input.focus();
 
-  // Enter handler
   input.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
       const raw = input.value.trim();
       handleCommand(raw);
       input.value = "";
     } else if (e.key === "c" && (e.ctrlKey || e.metaKey)) {
-      // Ctrl+C behaviour: clear input
       printToTerminal("<span class='text-yellow-400'>^C</span>");
       input.value = "";
     }
   });
 
-  // Message de bienvenue
   setTimeout(() => {
     printToTerminal(
-      "<span class='text-cyan-400'>Bienvenue dans le terminal de portfolio de " +
-        (about.name || "Abdoul Wahab") +
-        "</span>"
+      `<span class='text-cyan-400'>Bienvenue dans le terminal de portfolio de ${
+        about.name || "Abdoul Wahab"
+      }</span>`
     );
     printToTerminal(
-      "<span class='text-green-400'>Terminal initialisé. Tapez 'h' pour voir les commandes disponibles.</span>"
+      `<span class='text-green-400'>Terminal initialisé. Tapez 'h' pour voir les commandes disponibles.</span>`
     );
     printToTerminal("");
   }, 300);
 }
 
-/* Command implementation */
 function handleCommand(raw) {
   if (!raw) return;
+
   const args = raw.split(" ").filter(Boolean);
   const cmd = args.shift().toLowerCase();
-
-  // Afficher la commande entrée
   const data = window.portfolioData || {};
   const about = data.about || {};
   const username = about.name ? about.name.split(" ")[0].toLowerCase() : "user";
@@ -389,204 +525,49 @@ function handleCommand(raw) {
   switch (cmd) {
     case "h":
     case "help":
-      printToTerminal(
-        "<span class='text-yellow-400 font-bold'>=== COMMANDES DISPONIBLES ===</span>"
-      );
-      printToTerminal(
-        "<span class='text-cyan-300'>  help / h</span> - Affiche cette aide"
-      );
-      printToTerminal(
-        "<span class='text-cyan-300'>  about / 1</span> - Affiche ma bio et informations"
-      );
-      printToTerminal(
-        "<span class='text-cyan-300'>  skills / 2</span> - Liste toutes mes compétences"
-      );
-      printToTerminal(
-        "<span class='text-cyan-300'>  projects / 3</span> - Affiche mes projets"
-      );
-      printToTerminal(
-        "<span class='text-cyan-300'>  experience / 4</span> - Mon parcours professionnel"
-      );
-      printToTerminal(
-        "<span class='text-cyan-300'>  tools / 5</span> - Mes outils de travail"
-      );
-      printToTerminal(
-        "<span class='text-cyan-300'>  contact / 7</span> - Me contacter"
-      );
-      printToTerminal(
-        "<span class='text-cyan-300'>  gui / 8</span> - Retour à l'interface graphique"
-      );
-      printToTerminal(
-        "<span class='text-cyan-300'>  clear / c</span> - Efface l'écran"
-      );
-      printToTerminal(
-        "<span class='text-cyan-300'>  quit / q</span> - Quitter le terminal"
-      );
-      printToTerminal("");
+      showHelp();
       break;
 
     case "1":
     case "about":
-      if (data && data.about) {
-        printToTerminal(
-          "<span class='text-yellow-400'>=== À PROPOS DE MOI ===</span>"
-        );
-        printToTerminal(
-          `<span class='text-green-300'>Nom:</span> ${escapeHtml(
-            data.about.name || "—"
-          )}`
-        );
-        printToTerminal(
-          `<span class='text-green-300'>Profession:</span> ${escapeHtml(
-            data.about.job || ""
-          )}`
-        );
-        printToTerminal(
-          `<span class='text-green-300'>Localisation:</span> ${escapeHtml(
-            data.about.location || ""
-          )}`
-        );
-        printToTerminal("");
-        printToTerminal("<span class='text-yellow-400'>BIO:</span>");
-        printToTerminal(escapeHtml(data.about.bio || ""));
-        printToTerminal("");
-        printToTerminal("<span class='text-yellow-400'>DÉTAILS:</span>");
-        printToTerminal(escapeHtml(data.about.details || ""));
-      } else {
-        printToTerminal(
-          "<span class='text-red-400'>Erreur: Données non disponibles.</span>"
-        );
-      }
+      showAbout(data);
       break;
 
     case "2":
     case "skills":
-      if (data && Array.isArray(data.skills) && data.skills.length) {
-        printToTerminal(
-          "<span class='text-yellow-400'>=== MES COMPÉTENCES ===</span>"
-        );
-        data.skills.forEach((skill, index) => {
-          printToTerminal(
-            `${index + 1}. <span class='text-cyan-300'>${escapeHtml(
-              skill.name
-            )}</span>`
-          );
-        });
-      } else {
-        printToTerminal(
-          "<span class='text-red-400'>Aucune compétence trouvée.</span>"
-        );
-      }
+      showSkills(data);
       break;
 
     case "3":
     case "projects":
-      if (data && Array.isArray(data.projects) && data.projects.length) {
-        printToTerminal(
-          "<span class='text-yellow-400'>=== MES PROJETS ===</span>"
-        );
-        data.projects.forEach((project, index) => {
-          printToTerminal(
-            `${index + 1}. <span class='text-cyan-300'>${escapeHtml(
-              project.title
-            )}</span>`
-          );
-          printToTerminal(
-            `   <span class='text-gray-400'>${escapeHtml(project.desc)}</span>`
-          );
-        });
-      } else {
-        printToTerminal(
-          "<span class='text-red-400'>Aucun projet trouvé.</span>"
-        );
-      }
+      showProjects(data);
       break;
 
     case "4":
     case "experience":
     case "exp":
-      if (data && Array.isArray(data.experience) && data.experience.length) {
-        printToTerminal(
-          "<span class='text-yellow-400'>=== EXPÉRIENCE PROFESSIONNELLE ===</span>"
-        );
-        data.experience.forEach((exp, index) => {
-          printToTerminal(
-            `<span class='text-green-300'>[${escapeHtml(
-              exp.year
-            )}]</span> <span class='text-cyan-300'>${escapeHtml(
-              exp.title
-            )}</span>`
-          );
-          if (exp.duration) {
-            printToTerminal(
-              `   <span class='text-gray-400'>Durée: ${escapeHtml(
-                exp.duration
-              )}</span>`
-            );
-          }
-          printToTerminal(`   ${escapeHtml(exp.desc)}`);
-          if (index < data.experience.length - 1) printToTerminal("");
-        });
-      } else {
-        printToTerminal(
-          "<span class='text-red-400'>Aucune expérience trouvée.</span>"
-        );
-      }
+      showExperience(data);
       break;
 
     case "5":
     case "tools":
-      if (data && Array.isArray(data.tools) && data.tools.length) {
-        printToTerminal(
-          "<span class='text-yellow-400'>=== MES OUTILS ===</span>"
-        );
-        data.tools.forEach((tool, index) => {
-          printToTerminal(
-            `${index + 1}. <span class='text-cyan-300'>${escapeHtml(
-              tool.name
-            )}</span>`
-          );
-        });
-        printToTerminal("");
-        printToTerminal(
-          "<span class='text-gray-400'>Ces outils sont utilisés quotidiennement pour le développement.</span>"
-        );
-      } else {
-        printToTerminal(
-          "<span class='text-red-400'>Aucun outil trouvé.</span>"
-        );
-      }
+      showTools(data);
       break;
 
     case "6":
     case "cv":
     case "download":
-      printToTerminal(
-        "<span class='text-yellow-400'>Téléchargement du CV...</span>"
-      );
-      printToTerminal(
-        "<span class='text-green-400'>Redirection vers l'interface graphique pour le téléchargement.</span>"
-      );
-      setTimeout(() => setMode("gui"), 1500);
+      showDownload();
       break;
 
     case "7":
     case "contact":
-      printToTerminal("<span class='text-yellow-400'>=== CONTACT ===</span>");
-      printToTerminal("<span class='text-cyan-300'>Pour me contacter:</span>");
-      printToTerminal(
-        "1. Utilisez le formulaire de contact dans l'interface graphique (tapez 'gui')"
-      );
-      printToTerminal("2. GitHub: https://github.com/oabdoulwahab");
-      printToTerminal("3. Basé à Abidjan, Côte d'Ivoire");
+      showContact();
       break;
 
     case "8":
     case "gui":
-      printToTerminal(
-        "<span class='text-yellow-400'>Retour à la sélection de mode...</span>"
-      );
-      setTimeout(() => returnToModeSelection(), 800);
+      returnToGUI();
       break;
 
     case "c":
@@ -598,10 +579,7 @@ function handleCommand(raw) {
     case "q":
     case "quit":
     case "exit":
-      printToTerminal(
-        "<span class='text-yellow-400'>Retour à la sélection de mode...</span>"
-      );
-      setTimeout(() => returnToModeSelection(), 1000);
+      returnToSelection();
       break;
 
     default:
@@ -611,13 +589,200 @@ function handleCommand(raw) {
         )}</span>`
       );
       printToTerminal(
-        "<span class='text-yellow-400'>Tapez 'h' ou 'help' pour la liste des commandes.</span>"
+        `<span class='text-yellow-400'>Tapez 'h' ou 'help' pour la liste des commandes.</span>`
       );
       break;
   }
 }
 
-/* Helper: simple escape pour éviter HTML injection dans terminal */
+function showHelp() {
+  printToTerminal(
+    "<span class='text-yellow-400 font-bold'>=== COMMANDES DISPONIBLES ===</span>"
+  );
+  printToTerminal(
+    "<span class='text-cyan-300'>  help / h</span> - Affiche cette aide"
+  );
+  printToTerminal(
+    "<span class='text-cyan-300'>  about / 1</span> - Affiche ma bio et informations"
+  );
+  printToTerminal(
+    "<span class='text-cyan-300'>  skills / 2</span> - Liste toutes mes compétences"
+  );
+  printToTerminal(
+    "<span class='text-cyan-300'>  projects / 3</span> - Affiche mes projets"
+  );
+  printToTerminal(
+    "<span class='text-cyan-300'>  experience / 4</span> - Mon parcours professionnel"
+  );
+  printToTerminal(
+    "<span class='text-cyan-300'>  tools / 5</span> - Mes outils de travail"
+  );
+  printToTerminal(
+    "<span class='text-cyan-300'>  contact / 7</span> - Me contacter"
+  );
+  printToTerminal(
+    "<span class='text-cyan-300'>  gui / 8</span> - Retour à l'interface graphique"
+  );
+  printToTerminal(
+    "<span class='text-cyan-300'>  clear / c</span> - Efface l'écran"
+  );
+  printToTerminal(
+    "<span class='text-cyan-300'>  quit / q</span> - Quitter le terminal"
+  );
+  printToTerminal("");
+}
+
+function showAbout(data) {
+  if (data?.about) {
+    printToTerminal(
+      "<span class='text-yellow-400'>=== À PROPOS DE MOI ===</span>"
+    );
+    printToTerminal(
+      `<span class='text-green-300'>Nom:</span> ${escapeHtml(
+        data.about.name || "—"
+      )}`
+    );
+    printToTerminal(
+      `<span class='text-green-300'>Profession:</span> ${escapeHtml(
+        data.about.job || ""
+      )}`
+    );
+    printToTerminal(
+      `<span class='text-green-300'>Localisation:</span> ${escapeHtml(
+        data.about.location || ""
+      )}`
+    );
+    printToTerminal("");
+    printToTerminal("<span class='text-yellow-400'>BIO:</span>");
+    printToTerminal(escapeHtml(data.about.bio || ""));
+    printToTerminal("");
+    printToTerminal("<span class='text-yellow-400'>DÉTAILS:</span>");
+    printToTerminal(escapeHtml(data.about.details || ""));
+  } else {
+    printToTerminal(
+      "<span class='text-red-400'>Erreur: Données non disponibles.</span>"
+    );
+  }
+}
+
+function showSkills(data) {
+  if (data?.skills?.length) {
+    printToTerminal(
+      "<span class='text-yellow-400'>=== MES COMPÉTENCES ===</span>"
+    );
+    data.skills.forEach((skill, index) => {
+      printToTerminal(
+        `${index + 1}. <span class='text-cyan-300'>${escapeHtml(
+          skill.name
+        )}</span>`
+      );
+    });
+  } else {
+    printToTerminal(
+      "<span class='text-red-400'>Aucune compétence trouvée.</span>"
+    );
+  }
+}
+
+function showProjects(data) {
+  if (data?.projects?.length) {
+    printToTerminal("<span class='text-yellow-400'>=== MES PROJETS ===</span>");
+    data.projects.forEach((project, index) => {
+      printToTerminal(
+        `${index + 1}. <span class='text-cyan-300'>${escapeHtml(
+          project.title
+        )}</span>`
+      );
+      printToTerminal(
+        `   <span class='text-gray-400'>${escapeHtml(project.desc)}</span>`
+      );
+    });
+  } else {
+    printToTerminal("<span class='text-red-400'>Aucun projet trouvé.</span>");
+  }
+}
+
+function showExperience(data) {
+  if (data?.experience?.length) {
+    printToTerminal(
+      "<span class='text-yellow-400'>=== EXPÉRIENCE PROFESSIONNELLE ===</span>"
+    );
+    data.experience.forEach((exp, index) => {
+      printToTerminal(
+        `<span class='text-green-300'>[${escapeHtml(
+          exp.year
+        )}]</span> <span class='text-cyan-300'>${escapeHtml(exp.title)}</span>`
+      );
+      if (exp.duration) {
+        printToTerminal(
+          `   <span class='text-gray-400'>Durée: ${escapeHtml(
+            exp.duration
+          )}</span>`
+        );
+      }
+      printToTerminal(`   ${escapeHtml(exp.desc)}`);
+      if (index < data.experience.length - 1) printToTerminal("");
+    });
+  } else {
+    printToTerminal(
+      "<span class='text-red-400'>Aucune expérience trouvée.</span>"
+    );
+  }
+}
+
+function showTools(data) {
+  if (data?.tools?.length) {
+    printToTerminal("<span class='text-yellow-400'>=== MES OUTILS ===</span>");
+    data.tools.forEach((tool, index) => {
+      printToTerminal(
+        `${index + 1}. <span class='text-cyan-300'>${escapeHtml(
+          tool.name
+        )}</span>`
+      );
+    });
+    printToTerminal("");
+    printToTerminal(
+      "<span class='text-gray-400'>Ces outils sont utilisés quotidiennement pour le développement.</span>"
+    );
+  } else {
+    printToTerminal("<span class='text-red-400'>Aucun outil trouvé.</span>");
+  }
+}
+
+function showDownload() {
+  printToTerminal(
+    "<span class='text-yellow-400'>Téléchargement du CV...</span>"
+  );
+  printToTerminal(
+    "<span class='text-green-400'>Redirection vers l'interface graphique pour le téléchargement.</span>"
+  );
+  setTimeout(() => setMode("gui"), 1500);
+}
+
+function showContact() {
+  printToTerminal("<span class='text-yellow-400'>=== CONTACT ===</span>");
+  printToTerminal("<span class='text-cyan-300'>Pour me contacter:</span>");
+  printToTerminal(
+    "1. Utilisez le formulaire de contact dans l'interface graphique (tapez 'gui')"
+  );
+  printToTerminal("2. GitHub: https://github.com/oabdoulwahab");
+  printToTerminal("3. Basé à Abidjan, Côte d'Ivoire");
+}
+
+function returnToGUI() {
+  printToTerminal(
+    "<span class='text-yellow-400'>Retour à la sélection de mode...</span>"
+  );
+  setTimeout(() => returnToModeSelection(), 800);
+}
+
+function returnToSelection() {
+  printToTerminal(
+    "<span class='text-yellow-400'>Retour à la sélection de mode...</span>"
+  );
+  setTimeout(() => returnToModeSelection(), 1000);
+}
+
 function escapeHtml(str) {
   if (!str && str !== 0) return "";
   return String(str)
@@ -626,56 +791,6 @@ function escapeHtml(str) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-}
-
-function truncate(str, n) {
-  if (!str) return "";
-  return str.length > n ? str.slice(0, n) + "…" : str;
-}
-
-// ===============================================
-// CORRECTION SCROLL MOBILE POUR LE TERMINAL
-// ===============================================
-
-function scrollToBottom() {
-    const terminal = document.getElementById('terminal-container');
-    if (terminal && !terminal.classList.contains('hidden')) {
-        // Faire défiler le conteneur du terminal jusqu'en bas
-        terminal.scrollTop = terminal.scrollHeight;
-        
-        // Trouver et faire défiler l'input actif
-        const input = terminal.querySelector('input[type="text"]:focus');
-        if (input) {
-            // Utiliser scrollIntoView sur l'input pour s'assurer qu'il est visible au-dessus du clavier
-            setTimeout(() => {
-                input.scrollIntoView({ behavior: "smooth", block: "end" });
-            }, 100); 
-        }
-    }
-}
-
-// Observation des changements (ajout de nouvelles lignes de commande)
-const terminalContainer = document.getElementById('terminal-container');
-if (terminalContainer) {
-    const observer = new MutationObserver(scrollToBottom);
-    observer.observe(terminalContainer, { childList: true, subtree: true });
-
-    // Observation de l'apparition du clavier virtuel (changement de taille du viewport visuel)
-    // C'est la méthode la plus fiable pour détecter le clavier sur mobile.
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', () => {
-            setTimeout(scrollToBottom, 200); // Délai pour laisser le clavier se déployer
-        });
-    }
-
-    // Gérer les clics pour forcer le focus et le scroll (méthode de secours)
-    terminalContainer.addEventListener('click', () => {
-        const input = terminalContainer.querySelector('input');
-        if (input) {
-            input.focus();
-            setTimeout(scrollToBottom, 200);
-        }
-    });
 }
 
 /* ============================================================
@@ -687,63 +802,49 @@ function setMode(mode) {
   const term = document.getElementById("terminal-container");
   const selectionPage = document.getElementById("mode-selection-page");
 
-  if (mode === "terminal") {
-    if (selectionPage) selectionPage.classList.add("hidden");
-    if (gui) gui.classList.add("hidden");
-    if (term) {
+  switch (mode) {
+    case "terminal":
+      if (selectionPage) selectionPage.classList.add("hidden");
+      if (gui) gui.classList.add("hidden");
       createTerminalShell();
-      term.classList.remove("hidden");
-    }
-    localStorage.setItem("app-mode", "terminal");
-    setTimeout(() => {
-      const input = document.getElementById("terminal-input");
-      if (input) input.focus();
-    }, 120);
-  } else if (mode === "gui") {
-    if (selectionPage) selectionPage.classList.add("hidden");
-    if (term) {
-      term.classList.add("hidden");
-      term.innerHTML = "";
-    }
-    if (gui) gui.classList.remove("hidden");
+      localStorage.setItem("app-mode", "terminal");
+      break;
 
-    // ✅ AJOUTER CETTE LIGNE : Afficher la nav quand on lance le mode GUI
-    document.getElementById("gui-nav").classList.remove("hidden");
+    case "gui":
+      showGUI();
+      localStorage.setItem("app-mode", "gui");
+      break;
 
-    /* === Correction : lancer les particules GUI === */
-    if (typeof initGUIParticles === "function") {
-      initGUIParticles();
-    }
+    case "selection":
+      returnToModeSelection();
+      break;
 
-    localStorage.setItem("app-mode", "gui");
-  } else if (mode === "selection") {
-    // Pour retourner à la sélection
-    returnToModeSelection();
+    default:
+      returnToModeSelection();
   }
+}
 
-  if (mode === "gui") {
-    if (selectionPage) selectionPage.classList.add("hidden");
-    if (term) {
-      term.classList.add("hidden");
-      term.innerHTML = "";
-    }
-    if (gui) gui.classList.remove("hidden");
+function showGUI() {
+  const gui = document.getElementById("gui-container");
+  const guiNav = document.getElementById("gui-nav");
+  const selectionPage = document.getElementById("mode-selection-page");
+  const term = document.getElementById("terminal-container");
 
-    // S'assurer que les particules GUI sont visibles
-    const guiParticles = document.getElementById("particles-gui");
-    if (guiParticles && document.body.classList.contains("dark")) {
-      guiParticles.style.display = "block";
-    }
-
-    localStorage.setItem("app-mode", "gui");
+  if (selectionPage) selectionPage.classList.add("hidden");
+  if (term) {
+    term.classList.add("hidden");
+    term.innerHTML = "";
   }
+  if (gui) gui.classList.remove("hidden");
+  if (guiNav) guiNav.classList.remove("hidden");
+
+  localStorage.setItem("app-mode", "gui");
 }
 
 /* ============================================================
        🎭 ANIMATIONS MODE SELECTION
     ============================================================ */
 
-/* === Typing Effect Logo === */
 function typeLogo() {
   const logoText = "ABDOUL WAHAB";
   let i = 0;
@@ -761,7 +862,6 @@ function typeLogo() {
   type();
 }
 
-/* === Particules animées === */
 function initParticlesBackground() {
   const canvas = document.getElementById("particles-bg");
   if (!canvas) return;
@@ -771,11 +871,12 @@ function initParticlesBackground() {
   const total = 40;
 
   function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = canvas.parentElement.offsetWidth;
+    canvas.height = canvas.parentElement.offsetHeight;
   }
   resize();
-  window.onresize = resize;
+
+  window.addEventListener("resize", resize);
 
   for (let i = 0; i < total; i++) {
     particles.push({
@@ -788,27 +889,27 @@ function initParticlesBackground() {
   }
 
   function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!canvas.parentElement.classList.contains("hidden")) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    particles.forEach((p) => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(59,130,246,0.6)";
-      ctx.fill();
+      particles.forEach((p) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(59,130,246,0.6)";
+        ctx.fill();
 
-      p.x += p.dx;
-      p.y += p.dy;
+        p.x += p.dx;
+        p.y += p.dy;
 
-      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-    });
-
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      });
+    }
     requestAnimationFrame(animateParticles);
   }
   animateParticles();
 }
 
-/* === Transition animée lors du choix === */
 function animatedSelect(mode) {
   const page = document.getElementById("mode-selection-page");
   page.style.opacity = "0";
@@ -824,13 +925,10 @@ function animatedSelect(mode) {
        🌌 PARTICULES INTERFACE
     ============================================================ */
 
-/* === PARTICULES + RADAR POUR L'INTERFACE GRAPHIQUE (DARKMODE SEULEMENT) === */
 function initInterfaceParticles() {
-  // On vérifie que les éléments existent
   const canvas = document.getElementById("particles-interface");
   if (!canvas) return;
 
-  // On active uniquement en darkmode
   if (!document.body.classList.contains("dark")) {
     canvas.style.display = "none";
     return;
@@ -839,10 +937,11 @@ function initInterfaceParticles() {
   const ctx = canvas.getContext("2d");
 
   function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = canvas.parentElement.offsetWidth;
+    canvas.height = canvas.parentElement.offsetHeight;
   }
   resize();
+
   window.addEventListener("resize", resize);
 
   let particles = [];
@@ -859,163 +958,122 @@ function initInterfaceParticles() {
   }
 
   function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!canvas.parentElement.classList.contains("hidden")) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    particles.forEach((p) => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(59,130,246,0.5)";
-      ctx.fill();
+      particles.forEach((p) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(59,130,246,0.5)";
+        ctx.fill();
 
-      p.x += p.dx;
-      p.y += p.dy;
+        p.x += p.dx;
+        p.y += p.dy;
 
-      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-    });
-
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      });
+    }
     requestAnimationFrame(animateParticles);
   }
-
   animateParticles();
-}
-
-/* === PARTICULES POUR GUI EN DARKMODE === */
-function initGUIParticles() {
-  const canvas = document.createElement("canvas");
-  canvas.id = "particles-gui";
-  document.body.appendChild(canvas);
-
-  const ctx = canvas.getContext("2d");
-  let particles = [];
-  const total = 40;
-
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener("resize", resize);
-
-  // Créer les particules
-  for (let i = 0; i < total; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 2 + 1,
-      dx: Math.random() * 0.4 - 0.2,
-      dy: Math.random() * 0.4 - 0.2,
-    });
-  }
-
-  function animate() {
-    if (
-      !document.body.classList.contains("dark") ||
-      document.getElementById("gui-container").classList.contains("hidden")
-    ) {
-      requestAnimationFrame(animate);
-      return;
-    }
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    particles.forEach((p) => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(59,130,246,0.5)"; /* Bleu comme page sélection */
-      ctx.fill();
-
-      p.x += p.dx;
-      p.y += p.dy;
-
-      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-    });
-
-    requestAnimationFrame(animate);
-  }
-  animate();
 }
 
 /* ============================================================
        📧 CONTACT FORM
     ============================================================ */
 
-// function initContactForm() {
-//     const contactForm = document.getElementById('contact-form');
-//     if (!contactForm) return;
+function initContactForm() {
+  const contactForm = document.getElementById("contact-form");
+  if (!contactForm) return;
 
-//     contactForm.addEventListener('submit', function (event) {
-//         event.preventDefault();
+  contactForm.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-//         const btn = document.getElementById('btn-submit');
-//         const status = document.getElementById('form-status');
-//         const form = this;
+    const btn = document.getElementById("btn-submit");
+    const status = document.getElementById("form-status");
+    const form = this;
 
-//         btn.innerText = 'Envoi en cours...';
+    btn.innerText = "Envoi en cours...";
 
-//         // 1. VOS IDs (À REMPLACER)
-//         const serviceID = 'service_0f71uyc';
-//         const templateAdminID = 'template_de284b5'; // Celui qui vous notifie
-//         const templateAutoReplyID = 'template_uxqylb7'; // Le nouveau pour le client
+    const serviceID = "service_0f71uyc";
+    const templateAdminID = "template_de284b5";
+    const templateAutoReplyID = "template_uxqylb7";
 
-//         // 2. Envoi du mail à VOUS (Admin)
-//         emailjs.sendForm(serviceID, templateAdminID, form)
-//             .then(() => {
-//                 // 3. Si succès, envoi de l'auto-réponse au CLIENT
-//                 const userEmail = document.getElementById('email').value;
-//                 const userName = document.getElementById('name').value;
+    emailjs
+      .sendForm(serviceID, templateAdminID, form)
+      .then(() => {
+        const userEmail = document.getElementById("email").value;
+        const userName = document.getElementById("name").value;
 
-//                 // Params pour l'auto-reply
-//                 const autoReplyParams = {
-//                     name: userName,
-//                     email: userEmail,
-//                 };
+        const autoReplyParams = {
+          name: userName,
+          email: userEmail,
+        };
 
-//                 return emailjs.send(serviceID, templateAutoReplyID, autoReplyParams);
-//             })
-//             .then(() => {
-//                 // 4. Tout est fini avec succès
-//                 btn.innerText = 'Envoyé !';
-//                 btn.classList.replace('bg-accent-teal', 'bg-green-500');
-//                 status.innerText = "Message reçu ! nous vous recontacterons sous peu.";
-//                 status.classList.remove('hidden', 'text-red-500');
-//                 status.classList.add('text-green-600');
-//                 form.reset();
+        return emailjs.send(serviceID, templateAutoReplyID, autoReplyParams);
+      })
+      .then(() => {
+        btn.innerText = "Envoyé !";
+        btn.classList.replace("bg-accent-teal", "bg-green-500");
+        status.innerText = "Message reçu ! Nous vous recontacterons sous peu.";
+        status.classList.remove("hidden", "text-red-500");
+        status.classList.add("text-green-600");
+        form.reset();
 
-//                 setTimeout(() => {
-//                     btn.innerText = 'Envoyer le message';
-//                     btn.classList.replace('bg-green-500', 'bg-accent-teal');
-//                     status.classList.add('hidden');
-//                 }, 6000);
-//             })
-//             .catch((err) => {
-//                 btn.innerText = 'Erreur';
-//                 btn.classList.replace('bg-accent-teal', 'bg-red-500');
-//                 status.innerText = "Une erreur est survenue.";
-//                 status.classList.remove('hidden', 'text-green-600');
-//                 status.classList.add('text-red-500');
-//                 console.error('Erreur EmailJS:', err);
-//             });
-//     });
-// }
+        setTimeout(() => {
+          btn.innerText = "Envoyer le message";
+          btn.classList.replace("bg-green-500", "bg-accent-teal");
+          status.classList.add("hidden");
+        }, 6000);
+      })
+      .catch((err) => {
+        btn.innerText = "Erreur";
+        btn.classList.replace("bg-accent-teal", "bg-red-500");
+        status.innerText = "Une erreur est survenue.";
+        status.classList.remove("hidden", "text-green-600");
+        status.classList.add("text-red-500");
+        console.error("Erreur EmailJS:", err);
+      });
+  });
+}
 
 /* ============================================================
        🚀 INITIALISATION GLOBALE
     ============================================================ */
 
-// Initialiser tout quand le DOM est chargé
 document.addEventListener("DOMContentLoaded", function () {
   // Initialiser les animations de la page de sélection
   typeLogo();
   initParticlesBackground();
-
-  // Initialiser les particules d'interface
   initInterfaceParticles();
+  initContactForm();
 
-  // Initialiser le formulaire de contact
-  // initContactForm();
-
-  // Initialiser les particules GUI (sera appelée plus tard si besoin)
-  // initGUIParticles est déjà définie et sera appelée par setMode("gui")
+  // Charger les données du portfolio
+  loadPortfolioData();
 });
+function openModal({ title, desc, sections = [] }) {
+  const modal = document.getElementById("details-modal");
+  document.getElementById("modal-title").textContent = title || "";
+  document.getElementById("modal-desc").textContent = desc || "";
+
+  const content = document.getElementById("modal-content");
+  content.innerHTML = sections
+    .map(
+      (s) => `
+      <div class="border-l-4 border-accent-teal pl-4">
+        <h3 class="font-black uppercase mb-1">${s.label}</h3>
+        <p class="text-sm text-gray-700 dark:text-gray-300">${s.value}</p>
+      </div>
+    `
+    )
+    .join("");
+
+  modal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  document.getElementById("details-modal").classList.add("hidden");
+  document.body.style.overflow = "";
+}

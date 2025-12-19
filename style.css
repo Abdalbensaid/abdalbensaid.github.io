@@ -1,9 +1,50 @@
-/* style.css */
+/* style.css - Version finale optimisée */
+
+/* ===============================
+   VARIABLES ET CONFIGURATION
+================================ */
+:root {
+    /* Couleurs principales */
+    --primary-color: #f59e0b;
+    --accent-teal: #4fd1c5;
+    --accent-green: #16a34a;
+    --terminal-green: #00ff00;
+    --terminal-dark: #000;
+    
+    /* Palette sombre */
+    --dark-bg: #1f2937;
+    --dark-bg-secondary: #111827;
+    --dark-border: #374151;
+    --dark-border-light: #4b5563;
+    
+    /* Palette claire */
+    --light-bg: #ffffff;
+    --light-border: #000000;
+    
+    /* Textes */
+    --text-light: #f9fafb;
+    --text-gray-light: #e5e7eb;
+    --text-gray: #d1d5db;
+    --text-gray-dark: #9ca3af;
+    --text-dark: #111827;
+    
+    /* Ombres */
+    --shadow-hard: #111;
+    --shadow-teal: #0d9488;
+    --shadow-green: #16a34a;
+}
+
+/* ===============================
+   ICÔNES MATERIAL
+================================ */
 .material-symbols-outlined {
     font-variation-settings: "FILL" 0, "wght" 600, "GRAD" 0, "opsz" 24;
 }
 
-/* Style "souligné gribouillage" */
+/* ===============================
+   EFFETS VISUELS
+================================ */
+/* Souligné gribouillage */
 .scribble-underline {
     position: relative;
     display: inline-block;
@@ -16,36 +57,174 @@
     bottom: -2px;
     width: 100%;
     height: 4px;
-    background-color: #4fd1c5;
+    background-color: var(--accent-teal);
     border-radius: 2px;
     z-index: -1;
     transform: rotate(-1deg);
 }
 
-/* Animation de clignotement pour le curseur du typing effect */
+/* Carte 3D */
+.card-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-3d:hover {
+    transform: rotateY(8deg) rotateX(8deg) scale(1.03);
+}
+
+/* Ombres */
+.shadow-hard-lg {
+    box-shadow: 10px 10px 0px 0px var(--shadow-hard);
+}
+
+.shadow-hard-teal {
+    box-shadow: 6px 6px 0px 0px var(--shadow-teal);
+}
+
+.shadow-hard-green {
+    box-shadow: 6px 6px 0px 0px var(--shadow-green);
+}
+
+/* ===============================
+   ANIMATIONS
+================================ */
+/* Clignotement */
 @keyframes blink {
-    0%, 100% {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.animate-blink {
+    animation: blink 0.75s step-end infinite;
+}
+
+/* Fade In */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
         opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 1s ease forwards;
+}
+
+/* Slide Up */
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slideUp {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.6s ease forwards;
+}
+
+/* Scale In */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.animate-scaleIn {
+    animation: scaleIn 0.25s ease-out;
+}
+
+/* Délais d'animation */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+
+/* Timeline pulse */
+@keyframes timeline-pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+/* Scan effect */
+@keyframes scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Particles background */
+@keyframes particles {
+    0% { background-position: 0 0, 100px 100px, 200px 200px; }
+    100% { background-position: 300px 300px, 400px 400px, 500px 500px; }
+}
+
+/* Pulse glow */
+@keyframes pulse-glow {
+    0%, 100% {
+        opacity: 0.5;
+        box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
     }
     50% {
-        opacity: 0;
+        opacity: 1;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
     }
 }
 
-#terminal-container {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background-color: #000 !important;
-    z-index: 9999 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
+.gui-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Timeline vertical line - Blue neon effect */
+/* ===============================
+   TERMINAL
+================================ */
+#terminal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--terminal-dark);
+    z-index: 9999;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#terminal-shell {
+    background: linear-gradient(to bottom, #000 0%, #0a0a0a 100%);
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+    height: 100vh;
+}
+
+#terminal-input {
+    caret-color: var(--terminal-green);
+}
+
+#terminal-input::placeholder {
+    color: #4a9c4a;
+    opacity: 0.7;
+}
+
+.terminal-line {
+    color: var(--terminal-green);
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+/* ===============================
+   TIMELINE
+================================ */
 .timeline-vertical-line,
 .timeline-horizontal-line {
     transition: all 0.5s ease;
@@ -56,307 +235,88 @@
     background: linear-gradient(to bottom,
             transparent,
             rgba(59, 130, 246, 0.6),
-            transparent) !important;
+            transparent);
     box-shadow:
         0 0 15px rgba(59, 130, 246, 0.5),
         0 0 30px rgba(59, 130, 246, 0.3);
-}
-
-/* Animation de pulsation */
-@keyframes timeline-pulse {
-    0%, 100% {
-        opacity: 0.7;
-    }
-    50% {
-        opacity: 1;
-    }
-}
-
-.dark .timeline-vertical-line,
-.dark .timeline-horizontal-line {
     animation: timeline-pulse 3s ease-in-out infinite;
 }
 
-#terminal-input {
-    caret-color: #00ff00;
-}
-
-#terminal-input::placeholder {
-    color: #4a9c4a;
-    opacity: 0.7;
-}
-
-.terminal-line {
-    color: #00ff00;
-    white-space: pre-wrap;
-    word-break: break-word;
-    line-height: 1.4;
-}
-
-/* Effet de terminal vintage */
-#terminal-shell {
-    background: linear-gradient(to bottom, #000 0%, #0a0a0a 100%);
-    text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
-}
-
-#terminal-container,
-#terminal-shell {
-    height: 100vh;
-    /* overflow-y: auto; */
-}
-
-.animate-blink {
-    animation: blink 0.75s step-end infinite;
-}
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-fadeIn {
-    animation: fadeIn 1s ease forwards;
-}
-
-@keyframes slideUp {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-slideUp {
-    animation: slideUp 0.8s ease forwards;
-}
-
-.delay-100 {
-    animation-delay: 0.1s;
-}
-
-.delay-200 {
-    animation-delay: 0.2s;
-}
-
-.delay-300 {
-    animation-delay: 0.3s;
-}
-
-/* Radar
-@keyframes radar {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-.animate-radar {
-    animation: radar 8s linear infinite;
-} */
-
-/* 3D tilt effect */
-.card-3d {
-    transform-style: preserve-3d;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card-3d:hover {
-    transform: rotateY(8deg) rotateX(8deg) scale(1.03);
-}
-
-.shadow-hard-lg {
-    box-shadow: 10px 10px 0px 0px #1f2937;
-}
-
-.shadow-hard-teal {
-    box-shadow: 6px 6px 0px 0px #0d9488;
-}
-
-.shadow-hard-green {
-    box-shadow: 6px 6px 0px 0px #16a34a;
-}
-
-/* Radar rotation */
-/* @keyframes radar-spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-} */
-
-/* .animate-radar {
-    animation: radar-spin 12s linear infinite;
-} */
-
-/* Le canvas ne doit pas gêner les clics */
-#particles-interface {
-    pointer-events: none;
-}
-
-/* === CORRECTIONS MODE SOMBRE === */
+/* ===============================
+   MODE SOMBRE
+================================ */
 .dark .text-text-main {
-    color: #ffffff;
+    color: var(--text-light);
 }
 
 .dark .text-gray-800 {
-    color: #e5e7eb;
+    color: var(--text-gray-light);
 }
 
 .dark .text-gray-700 {
-    color: #d1d5db;
+    color: var(--text-gray);
 }
 
 .dark .text-gray-500 {
-    color: #9ca3af;
+    color: var(--text-gray-dark);
 }
 
 .dark .bg-white {
-    background-color: #1f2937 !important;
-    border-color: #374151 !important;
+    background-color: var(--dark-bg);
+    border-color: var(--dark-border);
+    color: var(--text-light);
 }
 
 .dark .bg-paper {
-    background-color: #111827;
+    background-color: var(--dark-bg-secondary);
 }
 
 .dark .shadow-hard {
-    box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.1);
 }
 
 .dark .shadow-hard-sm {
-    box-shadow: 2px 2px 0px 0px rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 2px 2px 0px 0px rgba(255, 255, 255, 0.1);
 }
 
-/* Correction pour les boutons */
+/* Boutons */
 .dark .bg-primary {
-    background-color: #f59e0b !important;
+    background-color: var(--primary-color);
 }
 
 .dark .bg-accent-teal {
-    background-color: #4fd1c5 !important;
+    background-color: var(--accent-teal);
 }
 
-/* Assurez-vous que tous les textes dans les cartes blanches sont visibles */
-.dark div.bg-white,
-.dark section.bg-white {
-    color: #f9fafb;
-}
-
-/* Pour le formulaire de contact */
+/* Formulaire de contact */
 .dark #contact-form {
-    background-color: #1f2937 !important;
-    border-color: #374151 !important;
+    background-color: var(--dark-bg);
+    border-color: var(--dark-border);
 }
 
 .dark #contact-form input,
 .dark #contact-form textarea {
-    background-color: #374151 !important;
-    border-color: #4b5563 !important;
-    color: #f9fafb !important;
+    background-color: var(--dark-border);
+    border-color: var(--dark-border-light);
+    color: var(--text-light);
 }
 
 .dark #contact-form input::placeholder,
 .dark #contact-form textarea::placeholder {
-    color: #9ca3af !important;
+    color: var(--text-gray-dark);
 }
 
-/* === EFFETS DARKMODE POUR GUI === */
-.dark #gui-container {
-    background-color: transparent !important;
-}
-
-/* Effets de particules pour GUI en darkmode */
-.dark #gui-container::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #080808;
-    z-index: -2;
-}
-
-/* Radar pour GUI */
-/* .dark #gui-container::after {
-    content: "";
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    width: 800px;
-    height: 800px;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    border: 1px solid rgba(0, 255, 0, 0.2);
-    opacity: 0.1;
-    animation: radar 12s linear infinite;
-    z-index: -1;
-} */
-
-/* Particules pour GUI */
-#particles-gui {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: -1 !important;
-    pointer-events: none;
-}
-
-/* Assure que le contenu GUI reste visible */
-.dark #gui-container>* {
-    position: relative !important;
-    z-index: 1 !important;
-}
-
-/* Correction de la couleur du texte en darkmode GUI */
-.dark #gui-container .text-gray-800 {
-    color: #f3f4f6 !important;
-}
-
-.dark #gui-container .text-gray-700 {
-    color: #e5e7eb !important;
-}
-
-/* Cartes en darkmode GUI */
-.dark #gui-container .bg-white {
-    background-color: rgba(17, 17, 17, 0.9) !important;
-    backdrop-filter: blur(10px);
-    border-color: #374151 !important;
-}
-
-/* Boutons en darkmode GUI */
-.dark #gui-container .bg-primary {
-    background-color: #f59e0b !important;
-}
-
-.dark #gui-container .bg-accent-teal {
-    background-color: #4fd1c5 !important;
-}
-
-/* === EFFETS GUI CONTAINER === */
+/* ===============================
+   INTERFACE GRAPHIQUE (GUI)
+================================ */
 #gui-container {
     position: relative;
     overflow: hidden;
     border-radius: 12px;
 }
 
-/* Effet scan radar pour le container */
-/* #gui-container::before {
+/* Effet scan radar */
+#gui-container::before {
     content: '';
     position: absolute;
     top: 0;
@@ -371,18 +331,9 @@
     );
     animation: scan 3s linear infinite;
     z-index: 10;
-} */
-
-@keyframes scan {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(100%);
-    }
 }
 
-/* Effet particules animées en fond */
+/* Effet particules */
 #gui-container::after {
     content: '';
     position: absolute;
@@ -400,60 +351,232 @@
     z-index: 1;
 }
 
-@keyframes particles {
-    0% {
-        background-position: 0 0, 100px 100px, 200px 200px;
-    }
-    100% {
-        background-position: 300px 300px, 400px 400px, 500px 500px;
-    }
-}
-
-/* Effet de bordure néon (darkmode seulement) */
+/* Darkmode GUI */
 .dark #gui-container {
+    background-color: transparent;
     border: 1px solid rgba(0, 255, 255, 0.3);
     box-shadow: 
         0 0 15px rgba(0, 255, 255, 0.2),
         inset 0 0 15px rgba(0, 255, 136, 0.1);
 }
 
-/* Pour s'assurer que le contenu reste au-dessus des effets */
+/* Contenu GUI */
+.dark #gui-container > *,
 #gui-container > * {
     position: relative;
     z-index: 2;
 }
 
-/* Animation radar spécifique pour GUI */
-/* .dark #gui-container .animate-radar {
-    animation: radar-spin 8s linear infinite;
-    border-color: rgba(0, 255, 128, 0.3);
-} */
-
-/* Effet de pulsing pour les points */
-@keyframes pulse-glow {
-    0%, 100% {
-        opacity: 0.5;
-        box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-    }
-    50% {
-        opacity: 1;
-        box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
-    }
+/* Particules GUI */
+#particles-gui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
 }
 
-.gui-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
+/* Canvas */
+#particles-interface {
+    pointer-events: none;
 }
 
-/* Responsive Utilities */
+/* ===============================
+   PROJETS (Version consolidée)
+================================ */
+#projects-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    width: 100%;
+    align-items: stretch;
+}
+
+.project-card {
+    min-height: 150px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--light-bg);
+    border: 2px solid var(--light-border);
+    border-radius: 12px;
+    padding: 0.75rem;
+    box-shadow: 3px 3px 0 var(--shadow-hard);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .project-card {
+    background: var(--dark-bg);
+    border-color: var(--dark-border);
+    box-shadow: 3px 3px 0 rgba(255, 255, 255, 0.08);
+}
+
+.project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0 var(--shadow-teal);
+}
+
+.project-card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.project-header {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+}
+
+.project-icon {
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--light-border);
+    border-radius: 6px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.dark .project-icon {
+    background: var(--dark-border);
+    border-color: var(--dark-border-light);
+}
+
+.project-title h3 {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-desc {
+    font-size: 0.7rem;
+    line-height: 1.35;
+    color: var(--text-gray-dark);
+    margin-top: 0.25rem;
+    margin-bottom: auto;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.dark .project-desc {
+    color: var(--text-gray-dark);
+}
+
+.project-footer {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 0.3rem;
+}
+
+.dark .project-footer {
+    border-top-color: var(--dark-border);
+}
+
+.project-button {
+    width: 100%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--shadow-teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    opacity: 0.85;
+    transition: opacity 0.2s ease, letter-spacing 0.2s ease;
+}
+
+.project-card:hover .project-button {
+    opacity: 1;
+    letter-spacing: 0.03em;
+}
+
+/* Accessibilité : contraste amélioré */
+.dark .project-button {
+    color: #4fd1c5; /* Version plus claire pour meilleur contraste */
+}
+
+.project-card:hover .project-button {
+    color: #5fe5d9; /* Encore plus clair au hover */
+}
+
+/* ===============================
+   UTILITAIRES
+================================ */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.h-full {
+    height: 100%;
+}
+
+/* Bouton retour */
+button[onclick="returnToModeSelection()"] {
+    background-color: var(--text-gray-light);
+    border: 2px solid var(--dark-bg);
+}
+
+.dark button[onclick="returnToModeSelection()"] {
+    background-color: var(--dark-border);
+    border-color: var(--dark-border-light);
+    color: var(--text-light);
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Correction overflow */
+body {
+    overflow-x: hidden;
+}
+
+/* Tailles de police responsives */
+.text-6xl { font-size: clamp(2.5rem, 8vw, 4rem); }
+.text-5xl { font-size: clamp(2rem, 6vw, 3rem); }
+.text-3xl { font-size: clamp(1.5rem, 5vw, 2rem); }
+
+/* Padding/Margin responsives */
+.p-10 { padding: clamp(1rem, 3vw, 2.5rem); }
+.mb-16 { margin-bottom: clamp(1rem, 4vw, 4rem); }
+.gap-10 { gap: clamp(1rem, 3vw, 2.5rem); }
+
+/* Affichage conditionnel */
+.mobile-only { display: block; }
+.desktop-only { display: none; }
+
+@media (min-width: 768px) {
+    .mobile-only { display: none; }
+    .desktop-only { display: block; }
+}
+
 @media (max-width: 768px) {
-    /* Ajustements pour mobile */
     .container {
         padding-left: 1rem;
         padding-right: 1rem;
     }
     
-    /* Mode selection page mobile */
     #mode-selection-page h1 {
         font-size: 2.5rem;
     }
@@ -462,141 +585,36 @@
         padding: 1.5rem;
     }
     
-    /* Terminal card pre text */
     .card-3d pre {
         font-size: 0.7rem;
-        /* overflow-x: auto; */
     }
     
-    /* Header adjustments */
     header h1 {
         font-size: 2rem;
     }
     
-    /* Section titles */
     h2 {
         font-size: 1.5rem;
     }
     
-    /* Contact form */
     #contact-form {
         padding: 1.5rem;
     }
     
-    /* Navigation buttons */
     nav a {
         font-size: 0.875rem;
         padding: 0.5rem 1rem;
     }
     
-    /* Timeline adjustments for mobile */
     .timeline-horizontal-line {
         width: 30px;
     }
     
-    /* Tools grid on mobile */
     #tools-container {
         grid-template-columns: repeat(3, 1fr);
     }
-}
-
-@media (max-width: 640px) {
-    /* Small mobile adjustments */
-    #mode-selection-page h1 {
-        font-size: 2rem;
-    }
     
-    .card-3d {
-        padding: 1rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Single column layout on very small screens */
-    .grid-cols-2 {
-        grid-template-columns: 1fr;
-    }
-    
-    /* Skills and tools on very small screens */
-    #skills-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    #tools-container {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.75rem;
-    }
-    
-    /* Project items */
-    #projects-container .flex {
-        padding: 0.75rem;
-    }
-    
-    /* Contact form inputs */
-    #contact-form input,
-    #contact-form textarea {
-        padding: 0.75rem;
-    }
-}
-
-/* Ensure images are responsive */
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-/* Fix for overflow on mobile */
-body {
-    overflow-x: hidden;
-}
-
-/* Responsive font sizes */
-.text-6xl {
-    font-size: clamp(2.5rem, 8vw, 4rem);
-}
-
-.text-5xl {
-    font-size: clamp(2rem, 6vw, 3rem);
-}
-
-.text-3xl {
-    font-size: clamp(1.5rem, 5vw, 2rem);
-}
-
-/* Responsive padding/margin */
-.p-10 {
-    padding: clamp(1rem, 3vw, 2.5rem);
-}
-
-.mb-16 {
-    margin-bottom: clamp(1rem, 4vw, 4rem);
-}
-
-/* Responsive grid gaps */
-.gap-10 {
-    gap: clamp(1rem, 3vw, 2.5rem);
-}
-
-/* Hide/show elements based on screen size */
-.mobile-only {
-    display: block;
-}
-
-.desktop-only {
-    display: none;
-}
-
-@media (min-width: 768px) {
-    .mobile-only {
-        display: none;
-    }
-    
-    .desktop-only {
-        display: block;
-    }
-}
-
-/* Fix for terminal on mobile */
-@media (max-width: 768px) {
+    /* Terminal mobile */
     #terminal-shell {
         padding: 1rem;
         font-size: 0.875rem;
@@ -611,14 +629,42 @@ body {
     }
 }
 
-/* Bouton retour visible */
-button[onclick="returnToModeSelection()"] {
-    background-color: #e5e7eb;
-    border: 2px solid #1f2937;
+@media (max-width: 640px) {
+    #mode-selection-page h1 {
+        font-size: 2rem;
+    }
+    
+    .card-3d {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    #skills-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    #tools-container {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+    
+    #projects-container .flex {
+        padding: 0.75rem;
+    }
+    
+    #contact-form input,
+    #contact-form textarea {
+        padding: 0.75rem;
+    }
 }
 
-.dark button[onclick="returnToModeSelection()"] {
-    background-color: #374151;
-    border-color: #6b7280;
-    color: white;
+/* Optimisation responsive des projets */
+@media (max-width: 480px) {
+    #projects-container {
+        grid-template-columns: 1fr;
+    }
 }
