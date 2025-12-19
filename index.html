@@ -27,7 +27,36 @@
     </script>
 
     <!-- Script principal -->
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
+
+    <script>
+        // Déclare les fonctions immédiatement pour éviter l'erreur
+        // Ces versions temporaires seront remplacées par les vraies fonctions
+        if (typeof animatedSelect === 'undefined') {
+            window.animatedSelect = function(mode) {
+                // Cette fonction temporaire sera remplacée par la vraie
+                // quand script.js sera chargé
+                console.log('Chargement du script en cours...');
+                // Réessaie après un court délai
+                setTimeout(() => {
+                    if (window.animatedSelect && window.animatedSelect !== arguments.callee) {
+                        window.animatedSelect(mode);
+                    }
+                }, 100);
+            };
+        }
+        
+        if (typeof returnToModeSelection === 'undefined') {
+            window.returnToModeSelection = function() {
+                console.log('Chargement du script en cours...');
+                setTimeout(() => {
+                    if (window.returnToModeSelection && window.returnToModeSelection !== arguments.callee) {
+                        window.returnToModeSelection();
+                    }
+                }, 100);
+            };
+        }
+    </script>
 </head>
 
 <body class="bg-paper text-text-main dark:bg-[#0d0d0d] dark:text-gray-100 font-display  transition-colors duration-300">
