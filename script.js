@@ -1221,7 +1221,6 @@ function openModal({ title, desc, sections = [] }) {
   } catch (err) {
     logError('openModal: error inspecting children', err);
   }
-}
 
 
 function closeModal() {
