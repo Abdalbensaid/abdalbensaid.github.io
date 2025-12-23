@@ -1,4 +1,3 @@
-
 /* ============================================================
        🎨 GESTION DARK MODE
     ============================================================ */
@@ -31,41 +30,46 @@ function logError(...args) {
 }
 
 // Global error handlers
-window.addEventListener('error', function (evt) {
-  logError('Uncaught error', evt.message, evt.filename, evt.lineno, evt.colno, evt.error);
+window.addEventListener("error", function (evt) {
+  logError(
+    "Uncaught error",
+    evt.message,
+    evt.filename,
+    evt.lineno,
+    evt.colno,
+    evt.error
+  );
 });
 
-window.addEventListener('unhandledrejection', function (evt) {
-  logError('Unhandled rejection', evt.reason);
+window.addEventListener("unhandledrejection", function (evt) {
+  logError("Unhandled rejection", evt.reason);
 });
 
-function toggleTheme() {  // <-- AJOUTÉ "function" ici
+function toggleTheme() {
+  // <-- AJOUTÉ "function" ici
   const isDark = document.documentElement.classList.toggle("dark");
   localStorage.setItem("theme", isDark ? "dark" : "light");
-  log('Theme toggled', isDark ? 'dark' : 'light');
+  log("Theme toggled", isDark ? "dark" : "light");
   initInterfaceParticles();
 }
-
 
 /* ============================================================
        🧭 CHOIX MODE
     ============================================================ */
-// ... reste du code inchangé ...
 
 function toggleTheme() {
   const isDark = document.documentElement.classList.toggle("dark");
   localStorage.setItem("theme", isDark ? "dark" : "light");
-  log('Theme toggled', isDark ? 'dark' : 'light');
+  log("Theme toggled", isDark ? "dark" : "light");
   initInterfaceParticles();
 }
-
 
 /* ============================================================
        🧭 CHOIX MODE
     ============================================================ */
 
 function chooseMode(mode) {
-  log('chooseMode called', mode);
+  log("chooseMode called", mode);
   document.getElementById("mode-selection-page").classList.add("hidden");
   setMode(mode);
 }
@@ -87,18 +91,31 @@ function returnToModeSelection() {
   document.getElementById("mode-selection-page").classList.remove("hidden");
 
   localStorage.setItem("app-mode", "selection");
-  log('Returned to mode selection');
+  log("Returned to mode selection");
 }
 
 /* ============================================================
        📦 LOAD JSON + INITIALISATION
     ============================================================ */
+function formatYearRange(startYear, endYear = null) {
+  return endYear ? `${startYear} - ${endYear}` : `${startYear} - présent`;
+}
+
+function calculateExperienceYears(startYear, endYear = null) {
+  const currentYear = new Date().getFullYear();
+  const finalYear = endYear ?? currentYear;
+  const years = finalYear - startYear;
+
+  if (years < 1) return "Moins d’un an";
+  if (years === 1) return "1 an d’expérience";
+  return `${years} ans d’expérience`;
+}
 
 function generateMobileExperience() {
   const data = window.portfolioData;
   if (!data?.experience) return;
 
-  log('generateMobileExperience', data.experience.length);
+  log("generateMobileExperience", data.experience.length);
 
   const mobileContainer = document.getElementById("experience-mobile");
   if (!mobileContainer) return;
@@ -112,74 +129,81 @@ function generateMobileExperience() {
       else if (exp.title.includes("BACKEND")) icon = "terminal";
       else if (exp.title.includes("FREELANCE")) icon = "business_center";
 
-      return `
-        <div class="bg-white border-2 border-black rounded-xl p-4 md:p-6 shadow-hard animate-slideUp cursor-pointer hover:scale-[1.02] transition-transform"
-             onclick="showExperienceDetails(${index})"
-             style="animation-delay: ${index * 100}ms">
-            <div class="flex items-start gap-3">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 flex items-center justify-center rounded-lg ${exp.bg_year
+      return `<div class="bg-white border-2 border-black rounded-xl p-4 md:p-6 shadow-hard animate-slideUp cursor-pointer hover:scale-[1.02] transition-transform"
+       onclick="showExperienceDetails(${index})"
+       style="animation-delay: ${index * 100}ms">
+
+    <div class="flex items-start gap-3">
+      <div class="flex-shrink-0">
+        <div class="w-10 h-10 flex items-center justify-center rounded-lg ${
+          exp.bg_year
         }">
-                        <span class="material-symbols-outlined">${icon}</span>
-                    </div>
-                </div>
-                <div class="flex-1">
-                    <div class="flex flex-wrap items-center gap-2 mb-2">
-                        <div class="text-sm font-black px-2 py-1 border-2 border-black shadow-hard-sm ${exp.bg_year
-        }">
-                            ${exp.year}
-                        </div>
-                        ${exp.duration
-          ? `<span class="text-xs font-bold text-gray-500">${exp.duration}</span>`
-          : ""
-        }
-                    </div>
-                    <h3 class="font-black text-base md:text-lg uppercase mb-2">${exp.title
-        }</h3>
-                    <p class="text-gray-700 text-sm leading-relaxed">${exp.desc || exp.details?.role || ""
-        }</p>
-                    <div class="mt-3 text-xs text-accent-teal font-bold flex items-center gap-1">
-                        <span>Cliquer pour voir les détails</span>
-                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                    </div>
-                </div>
-            </div>
+          <span class="material-symbols-outlined">${icon}</span>
         </div>
-        `;
+      </div>
+
+      <div class="flex-1">
+        <div class="flex flex-wrap items-center gap-2 mb-2">
+
+          <!-- ANNÉES DYNAMIQUES -->
+          <div class="text-sm font-black px-2 py-1 border-2 border-black shadow-hard-sm ${
+            exp.bg_year
+          }">
+            ${formatYearRange(exp.startYear, exp.endYear)}
+          </div>
+
+          <!-- DURÉE DYNAMIQUE -->
+          <p class="text-xs font-bold text-gray-500 mt-1">
+            (${calculateExperienceYears(exp.startYear, exp.endYear)})
+          </p>
+
+        </div>
+
+        <h3 class="font-black text-base md:text-lg uppercase mb-2">
+          ${exp.title}
+        </h3>
+
+        <p class="text-gray-700 text-sm leading-relaxed">
+          ${exp.desc || exp.details?.role || ""}
+        </p>
+
+        <div class="mt-3 text-xs text-accent-teal font-bold flex items-center gap-1">
+          <span>Cliquer pour voir les détails</span>
+          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </div>
+      </div>
+    </div>
+  </div>
+`;
     })
     .join("");
 }
 
 window.showExperienceDetails = function (index) {
-  log('showExperienceDetails called', index);
+  log("showExperienceDetails called", index);
   const exp = window.portfolioData?.experience?.[index];
   if (!exp?.details) return;
 
   setTimeout(() => {
-    log('opening modal for experience', index);
-    openModal({
-      title: exp.title,
-      desc: exp.details.role,
-      sections: [
-        {
-          label: "Responsabilités clés",
-          value: `<ul class="list-disc ml-5">
-          ${exp.details.tasks.map((t) => `<li>${t}</li>`).join("")}
-        </ul>`,
-        },
-      ],
-    });
+    log("opening modal for experience", index);
+    openModal(`
+    <h3>${exp.title}</h3>
+    <p>${exp.details.role}</p>
+    <ul>
+      ${exp.details.tasks.map((t) => `<li>• ${t}</li>`).join("")}
+    </ul>
+  `);
   }, 0);
-}
+};
 
 async function loadPortfolioData() {
   try {
-    log('loadPortfolioData start');
+    log("loadPortfolioData start");
     const response = await fetch("data.json");
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
     const data = await response.json();
-    log('JSON loaded', {
+    log("JSON loaded", {
       projects: data.projects?.length || 0,
       skills: data.skills?.length || 0,
       experience: data.experience?.length || 0,
@@ -189,6 +213,14 @@ async function loadPortfolioData() {
       data.projects = data.projects.slice(0, 6);
     }
     window.portfolioData = data;
+
+    // 🔥 EXPERIENCE TOTALE (NIVEAU SENIOR)
+    const totalExpEl = document.getElementById("total-experience");
+    if (totalExpEl && data.experience?.length) {
+      totalExpEl.textContent = `+${calculateTotalExperience(
+        data.experience
+      )} ans d’expérience`;
+    }
 
     // Mise à jour des informations personnelles
     updatePersonalInfo(data);
@@ -237,17 +269,19 @@ function generateSkills(skills = []) {
   const container = document.getElementById("skills-container");
   if (!container) return;
 
-  log('generateSkills', skills.length);
+  log("generateSkills", skills.length);
 
   container.innerHTML = skills
     .map(
       (skill) => `
     <div class="flex flex-col items-center bg-white border-2 border-black p-2 md:p-3 rounded-xl shadow-hard hover:-translate-y-1 transition-transform">
         <div class="${skill.color || "text-gray-600"} mb-1">
-            <span class="material-symbols-outlined text-2xl md:text-3xl">${skill.icon || "code"
-        }</span>
+            <span class="material-symbols-outlined text-2xl md:text-3xl">${
+              skill.icon || "code"
+            }</span>
         </div>
-        <span class="text-xs font-bold uppercase text-center">${skill.name
+        <span class="text-xs font-bold uppercase text-center">${
+          skill.name
         }</span>
     </div>
     `
@@ -259,7 +293,7 @@ function generateTools(tools = []) {
   const container = document.getElementById("tools-container");
   if (!container) return;
 
-  log('generateTools', tools.length);
+  log("generateTools", tools.length);
 
   container.innerHTML = tools
     .map(
@@ -283,7 +317,7 @@ function generateProjects(projects = []) {
   const container = document.getElementById("projects-container");
   if (!container) return;
 
-  log('generateProjects', projects.length);
+  log("generateProjects", projects.length);
 
   // Limiter à 6 projets maximum pour une grille 3x2
   const displayProjects = projects.slice(0, 6);
@@ -297,19 +331,22 @@ function generateProjects(projects = []) {
           <div class="project-card-content">
               <div class="project-header">
                   <div class="project-icon ${project.bg || "bg-gray-50"}">
-                      <span class="material-symbols-outlined">${project.icon || "folder"
-        }</span>
+                      <span class="material-symbols-outlined">${
+                        project.icon || "folder"
+                      }</span>
                   </div>
                   <div class="project-title">
                       <h3 title="${project.title}">${project.title}</h3>
                   </div>
               </div>
               
-              <p class="project-desc" title="${project.desc}">${project.desc
-        }</p>
+              <p class="project-desc" title="${project.desc}">${
+        project.desc
+      }</p>
               
-              ${project.details
-          ? `
+              ${
+                project.details
+                  ? `
               <div class="project-footer">
                   <button class="project-button ">
                       <span>Détails</span>
@@ -317,8 +354,8 @@ function generateProjects(projects = []) {
                   </button>
               </div>
               `
-          : ""
-        }
+                  : ""
+              }
           </div>
       </div>
     `
@@ -327,27 +364,27 @@ function generateProjects(projects = []) {
 
   // Fallback: attacher des écouteurs de clics aux cartes projets (meilleure compatibilité)
   try {
-    const cards = container.querySelectorAll('.project-card');
+    const cards = container.querySelectorAll(".project-card");
     cards.forEach((card, idx) => {
-      card.style.cursor = 'pointer';
-      card.addEventListener('click', (e) => {
+      card.style.cursor = "pointer";
+      card.addEventListener("click", (e) => {
         e.stopPropagation();
-        log('project card clicked', idx);
+        log("project card clicked", idx);
         window.showProjectDetails(idx);
       });
     });
   } catch (e) {
-    logError('Error attaching project click handlers', e);
+    logError("Error attaching project click handlers", e);
   }
 }
 
 window.showProjectDetails = function (index) {
-  log('showProjectDetails called', index);
+  log("showProjectDetails called", index);
   const project = window.portfolioData?.projects?.[index];
   if (!project?.details) return;
 
   setTimeout(() => {
-    log('opening modal for project', index);
+    log("opening modal for project", index);
     openModal({
       title: project.title,
       desc: project.desc,
@@ -364,7 +401,7 @@ function generateExperience(experience = []) {
   const container = document.getElementById("experience-container");
   if (!container) return;
 
-  log('generateExperience', experience.length);
+  log("generateExperience", experience.length);
 
   const verticalLine =
     '<div class="timeline-vertical-line absolute left-20 top-0 bottom-0 w-1.5 bg-black rounded-full z-0"></div>';
@@ -372,34 +409,37 @@ function generateExperience(experience = []) {
   const expHTML = experience
     .map(
       (exp, index) => `
-            <div class="relative pl-10 mb-10 z-20 group animate-slideUp" style="animation-delay: ${index * 100
-        }ms">
+            <div class="relative pl-10 mb-10 z-20 group animate-slideUp" style="animation-delay: ${
+              index * 100
+            }ms">
                 <div class="timeline-horizontal-line absolute -left-[14px] top-1/2 -translate-y-1/2 w-10 h-1.5 bg-black rounded-r-none"></div>
                 
-                <div class="absolute -left-28 top-1/2 -translate-y-1/2 text-sm font-black whitespace-nowrap px-2 py-1 border-2 border-black shadow-hard-sm transform ${exp.rotation || ""
-        } ${exp.bg_year || "bg-white"}">
+                <div class="absolute -left-28 top-1/2 -translate-y-1/2 text-sm font-black whitespace-nowrap px-2 py-1 border-2 border-black shadow-hard-sm transform ${
+                  exp.rotation || ""
+                } ${exp.bg_year || "bg-white"}">
                     ${exp.year}
                 </div>
 
                 <div class="p-6 bg-white border-2 border-black rounded-xl shadow-hard transition-transform group-hover:scale-[1.02]">
                     <p class="font-black text-lg uppercase">${exp.title}</p>
-                    ${exp.duration
-          ? `<p class="text-xs font-bold text-gray-500 mt-1">(${exp.duration})</p>`
-          : ""
-        }
+                    <p class="text-xs font-bold text-gray-500 mt-1">
+                      (${calculateExperienceYears(exp.startYear, exp.endYear)})
+                    </p>
+
                     <p class="text-gray-700 mt-2">${exp.desc}</p>
                     
                     <!-- Bouton Voir détails -->
-                    ${exp.details
-          ? `
+                    ${
+                      exp.details
+                        ? `
                     <button onclick="showExperienceDetails(${index})" 
                             class="mt-4 flex items-center gap-1 text-xs font-bold text-accent-teal hover:text-teal-600 transition-colors">
                         <span>Voir les détails</span>
                         <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </button>
                     `
-          : ""
-        }
+                        : ""
+                    }
                 </div>
             </div>
         `
@@ -410,17 +450,17 @@ function generateExperience(experience = []) {
 
   // Fallback: attacher des écouteurs de clics pour les éléments d'expérience
   try {
-    const items = container.querySelectorAll('.group');
+    const items = container.querySelectorAll(".group");
     items.forEach((item, idx) => {
-      item.style.cursor = 'pointer';
-      item.addEventListener('click', (e) => {
+      item.style.cursor = "pointer";
+      item.addEventListener("click", (e) => {
         e.stopPropagation();
-        log('experience item clicked', idx);
+        log("experience item clicked", idx);
         window.showExperienceDetails(idx);
       });
     });
   } catch (e) {
-    logError('Error attaching experience click handlers', e);
+    logError("Error attaching experience click handlers", e);
   }
 }
 
@@ -445,7 +485,7 @@ function showErrorMessage() {
 function startTypingEffect(phrases = []) {
   const typingElement = document.getElementById("typing-text");
   if (!typingElement || !phrases.length) {
-    log('startTypingEffect skipped', !!typingElement, (phrases || []).length);
+    log("startTypingEffect skipped", !!typingElement, (phrases || []).length);
     return;
   }
 
@@ -507,7 +547,7 @@ function createTerminalShell() {
   if (!term) return;
 
   term.classList.remove("hidden");
-  log('createTerminalShell opened');
+  log("createTerminalShell opened");
 
   const data = window.portfolioData || {};
   const about = data.about || {};
@@ -515,15 +555,19 @@ function createTerminalShell() {
   term.innerHTML = `
         <div id="terminal-shell" class="w-full min-h-screen bg-black text-green-400 p-4 font-mono text-sm overflow-auto pb-20">
             <div class="text-center mb-6">
-                <div class="text-cyan-300 text-lg font-bold mb-2">${about.name || "Portfolio Terminal"
-    }</div>
-                <div class="text-green-300 mb-1">Profession : ${about.job || "Développeur"
-    }</div>
-                <div class="text-green-300 mb-1">Localisation : ${about.location || "Non spécifié"
-    }</div>
+                <div class="text-cyan-300 text-lg font-bold mb-2">${
+                  about.name || "Portfolio Terminal"
+                }</div>
+                <div class="text-green-300 mb-1">Profession : ${
+                  about.job || "Développeur"
+                }</div>
+                <div class="text-green-300 mb-1">Localisation : ${
+                  about.location || "Non spécifié"
+                }</div>
                 <div class="text-green-300 mb-3">GitHub : https://github.com/oabdoulwahab</div>
-                <div class="text-green-500 mb-4">~~~~~~~~~~~~~~~~~~~~~~ ${about.name ? about.name.split(" ")[0] : "Portfolio"
-    } Terminal ~~~~~~~~~~~~~~~~~~~~~~~~</div>
+                <div class="text-green-500 mb-4">~~~~~~~~~~~~~~~~~~~~~~ ${
+                  about.name ? about.name.split(" ")[0] : "Portfolio"
+                } Terminal ~~~~~~~~~~~~~~~~~~~~~~~~</div>
                 
                 <div class="grid grid-cols-2 gap-2 text-left ml-8 mb-6">
                     <div class="text-green-400">[1] ✓ Afficher Bio</div>
@@ -540,17 +584,19 @@ function createTerminalShell() {
                 </div>
                 
                 <div class="text-yellow-400 font-bold mb-4 border-t border-green-700 pt-2">
-                    [${about.name
-      ? about.name.split(" ")[0].toLowerCase()
-      : "dev"
-    }@portfolio] = [~/terminal.sh]
+                    [${
+                      about.name
+                        ? about.name.split(" ")[0].toLowerCase()
+                        : "dev"
+                    }@portfolio] = [~/terminal.sh]
                 </div>
             </div>
             
             <div id="terminal-output" class="mb-4"></div>
             <div class="flex gap-2 items-center border-t border-green-800 pt-2 sticky bottom-0 bg-black">
-                <span class="text-green-300 font-bold">${about.name ? about.name.split(" ")[0].toLowerCase() : "user"
-    }@portfolio</span>
+                <span class="text-green-300 font-bold">${
+                  about.name ? about.name.split(" ")[0].toLowerCase() : "user"
+                }@portfolio</span>
                 <span class="text-white">:</span>
                 <span class="text-cyan-300">~</span>
                 <span class="text-white">$</span>
@@ -578,7 +624,8 @@ function createTerminalShell() {
 
   setTimeout(() => {
     printToTerminal(
-      `<span class='text-cyan-400'>Bienvenue dans le terminal de portfolio de ${about.name || "Abdoul Wahab"
+      `<span class='text-cyan-400'>Bienvenue dans le terminal de portfolio de ${
+        about.name || "Abdoul Wahab"
       }</span>`
     );
     printToTerminal(
@@ -590,7 +637,7 @@ function createTerminalShell() {
 
 function handleCommand(raw) {
   if (!raw) return;
-  log('handleCommand', raw);
+  log("handleCommand", raw);
 
   const args = raw.split(" ").filter(Boolean);
   const cmd = args.shift().toLowerCase();
@@ -796,11 +843,12 @@ function showExperience(data) {
         )}]</span> <span class='text-cyan-300'>${escapeHtml(exp.title)}</span>`
       );
       if (exp.duration) {
+        printToTerminal(`📅 ${formatYearRange(exp.startYear, exp.endYear)}`);
         printToTerminal(
-          `   <span class='text-gray-400'>Durée: ${escapeHtml(
-            exp.duration
-          )}</span>`
+          `⏳ ${calculateExperienceYears(exp.startYear, exp.endYear)}`
         );
+      } else {
+        printToTerminal(`📅 ${formatYear(exp.startYear)}`);
       }
       printToTerminal(`   ${escapeHtml(exp.desc)}`);
       if (index < data.experience.length - 1) printToTerminal("");
@@ -1015,7 +1063,6 @@ function initInterfaceParticles() {
     canvas.style.display = "none";
     return;
   }
-  
 
   const ctx = canvas.getContext("2d");
 
@@ -1126,7 +1173,7 @@ function initContactForm() {
     ============================================================ */
 
 document.addEventListener("DOMContentLoaded", function () {
-  log('DOM ready - initialization start');
+  log("DOM ready - initialization start");
   typeLogo();
   initParticlesBackground();
   initInterfaceParticles();
@@ -1141,7 +1188,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function openModal({ title, desc, sections = [] }) {
   const modal = document.getElementById("details-modal");
   if (!modal) {
-    logError('openModal: details-modal element not found');
+    logError("openModal: details-modal element not found");
     return;
   }
 
@@ -1160,133 +1207,91 @@ function openModal({ title, desc, sections = [] }) {
 
       </div>
     `
-      )
-      .join("");
-  }
-
-  // FORCER l'affichage du modal
-  modal.classList.remove("hidden");
-  // Force display and high z-index to ensure visibility when CSS or other scripts interfere
-  try {
-    modal.style.display = 'block';
-    modal.style.zIndex = 100000;
-    modal.style.opacity = 1;
-    modal.style.pointerEvents = 'auto';
-  } catch (e) {
-    logError('openModal: error forcing styles', e);
-  }
-  document.body.style.overflow = "hidden";
-  // Force overlay/dialog stacking order and log computed state for diagnosis
-  try {
-    const modalChildren = Array.from(modal.children);
-    const overlay = modalChildren[0];
-    const dialog = modalChildren[1];
-
-    if (overlay) {
-      overlay.style.zIndex = String(Number(modal.style.zIndex || 100000));
-      overlay.style.pointerEvents = 'auto';
-    }
-    if (dialog) {
-      dialog.style.zIndex = String(Number(modal.style.zIndex || 100000) + 1);
-      dialog.style.position = dialog.style.position || 'relative';
-      dialog.style.display = 'block';
-    }
-
-    // Log computed styles and bounding boxes
-    const modalStyle = window.getComputedStyle(modal);
-    const overlayStyle = overlay ? window.getComputedStyle(overlay) : null;
-    const dialogStyle = dialog ? window.getComputedStyle(dialog) : null;
-    const modalRect = modal.getBoundingClientRect ? modal.getBoundingClientRect() : null;
-    const dialogRect = dialog && dialog.getBoundingClientRect ? dialog.getBoundingClientRect() : null;
-
-    log('modal opened', {
-      title,
-      desc,
-      sectionsCount: sections.length,
-      modalClasses: modal.className,
-      modalStyle: {
-        display: modalStyle.display,
-        visibility: modalStyle.visibility,
-        opacity: modalStyle.opacity,
-      },
-      overlayStyle: overlayStyle
-        ? { display: overlayStyle.display, zIndex: overlayStyle.zIndex, pointerEvents: overlayStyle.pointerEvents }
-        : null,
-      dialogStyle: dialogStyle
-        ? { display: dialogStyle.display, zIndex: dialogStyle.zIndex, pointerEvents: dialogStyle.pointerEvents }
-        : null,
-      modalRect,
-      dialogRect,
-    });
-  } catch (err) {
-    logError('openModal: error inspecting children', err);
-  }
-function openModal({ title, desc, sections = [] }) {
-  const modal = document.getElementById("details-modal");
-  if (!modal) {
-    logError('openModal: details-modal element not found');
-    return;
-  }
-
-  // Mettre à jour le contenu
-  document.getElementById("modal-title").textContent = title || "";
-  document.getElementById("modal-desc").textContent = desc || "";
-
-  const content = document.getElementById("modal-content");
-  if (content) {
-    content.innerHTML = sections
-      .map(
-        (s) => `
-      <div class="border-l-4 border-accent-teal pl-4 mb-4">
-        <h3 class="font-black uppercase mb-2">${s.label}</h3>
-        <div class="text-sm text-gray-700 dark:text-gray-300">
-          ${s.value}
-        </div>
-      </div>
-    `
-      )
-      .join("");
-  }
-
-  // FORCER l'affichage du modal
-  modal.classList.remove("hidden");
-  
-  // Ajouter des styles inline pour garantir l'affichage
-  modal.style.display = "block";
-  modal.style.opacity = "1";
-  modal.style.visibility = "visible";
-  modal.style.zIndex = "999999";
-  modal.style.position = "fixed";
-  modal.style.top = "0";
-  modal.style.left = "0";
-  modal.style.width = "100%";
-  modal.style.height = "100%";
-  
-  // Ajouter une classe au body pour empêcher le défilement
-  document.body.classList.add("modal-open");
-  document.body.style.overflow = "hidden";
-  document.body.style.position = "fixed";
-  document.body.style.width = "100%";
-  document.body.style.height = "100%";
-  
-  log('Modal ouvert avec succès', { 
-    title,
-    modalVisible: modal.style.display,
-    modalClasses: modal.className 
-  });
+    )
+    .join("");
 }
 
+// FORCER l'affichage du modal
+modal.classList.remove("hidden");
+// Force display and high z-index to ensure visibility when CSS or other scripts interfere
+try {
+  modal.style.display = "block";
+  modal.style.zIndex = 100000;
+  modal.style.opacity = 1;
+  modal.style.pointerEvents = "auto";
+} catch (e) {
+  logError("openModal: error forcing styles", e);
+}
+document.body.style.overflow = "hidden";
+// Force overlay/dialog stacking order and log computed state for diagnosis
+try {
+  const modalChildren = Array.from(modal.children);
+  const overlay = modalChildren[0];
+  const dialog = modalChildren[1];
+
+  if (overlay) {
+    overlay.style.zIndex = String(Number(modal.style.zIndex || 100000));
+    overlay.style.pointerEvents = "auto";
+  }
+  if (dialog) {
+    dialog.style.zIndex = String(Number(modal.style.zIndex || 100000) + 1);
+    dialog.style.position = dialog.style.position || "relative";
+    dialog.style.display = "block";
+  }
+
+  // Log computed styles and bounding boxes
+  const modalStyle = window.getComputedStyle(modal);
+  const overlayStyle = overlay ? window.getComputedStyle(overlay) : null;
+  const dialogStyle = dialog ? window.getComputedStyle(dialog) : null;
+  const modalRect = modal.getBoundingClientRect
+    ? modal.getBoundingClientRect()
+    : null;
+  const dialogRect =
+    dialog && dialog.getBoundingClientRect
+      ? dialog.getBoundingClientRect()
+      : null;
+
+  log("modal opened", {
+    title,
+    desc,
+    sectionsCount: sections.length,
+    modalClasses: modal.className,
+    modalStyle: {
+      display: modalStyle.display,
+      visibility: modalStyle.visibility,
+      opacity: modalStyle.opacity,
+    },
+    overlayStyle: overlayStyle
+      ? {
+          display: overlayStyle.display,
+          zIndex: overlayStyle.zIndex,
+          pointerEvents: overlayStyle.pointerEvents,
+        }
+      : null,
+    dialogStyle: dialogStyle
+      ? {
+          display: dialogStyle.display,
+          zIndex: dialogStyle.zIndex,
+          pointerEvents: dialogStyle.pointerEvents,
+        }
+      : null,
+    modalRect,
+    dialogRect,
+  });
+} catch (err) {
+  logError("openModal: error inspecting children", err);
+}
 
 function closeModal() {
   const modal = document.getElementById("details-modal");
   if (modal) {
     modal.classList.add("hidden");
-    
+
     // Réinitialiser les styles
     modal.style.display = "none";
     modal.style.opacity = "0";
     modal.style.visibility = "hidden";
-    
+
     // Retirer la classe du body
     document.body.classList.remove("modal-open");
     document.body.style.overflow = "";
@@ -1294,4 +1299,10 @@ function closeModal() {
     document.body.style.width = "";
     document.body.style.height = "";
   }
+}
+
+function calculateTotalExperience(experiences) {
+  const currentYear = new Date().getFullYear();
+  const firstYear = Math.min(...experiences.map((e) => e.startYear));
+  return currentYear - firstYear;
 }

@@ -145,9 +145,10 @@
   ],
   "experience": [
     {
-      "year": "2022-2024",
+      "year": "2022 ",
+      "startYear": 2022,
+      "endYear": null,
       "title": "DÉVELOPPEUR BACKEND / LARAVEL",
-      "duration": "2 ans d'expérience",
       "desc": "Développement et maintenance d'applications web avec Laravel, optimisation des bases de données MySQL et conception d'APIs robustes pour projets SaaS.",
       "details": {
         "role": "Développement et maintenance d'applications web avec Laravel",
@@ -161,9 +162,10 @@
       "bg_year": "bg-accent-teal text-white"
     },
     {
-      "year": "2021-2022",
+      "year": "2024",
+      "startYear": 2024,
+      "endYear": null,
       "title": "DÉVELOPPEUR FRONTEND / REACT.JS",
-      "duration": "1 an d'expérience",
       "desc": "Création d'interfaces web dynamiques et réactives, amélioration de l'expérience utilisateur et développement de dashboards interactifs.",
       "details": {
         "role": "Création d'interfaces web dynamiques et réactives",
@@ -177,9 +179,10 @@
       "bg_year": "bg-white text-blue-500"
     },
     {
-      "year": "2021",
+      "year": "2025",
+      "startYear": 2025,
+      "endYear": null,
       "title": "DÉVELOPPEUR MOBILE / REACT NATIVE",
-      "duration": "6 mois d'expérience",
       "desc": "Développement d'applications mobiles multiplateformes avec intégration de fonctionnalités temps réel et optimisation UX mobile.",
       "details": {
         "role": "Développement d'applications mobiles multiplateformes",
@@ -193,9 +196,10 @@
       "bg_year": "bg-white text-black"
     },
     {
-      "year": "2024",
+      "year": "2021",
+      "startYear": 2021,
+      "endYear": null,
       "title": "DÉVELOPPEUR FULL-STACK FREELANCE",
-      "duration": "",
       "desc": "Réalisation de projets web et mobile pour clients variés, du cahier des charges à la livraison finale.",
       "details": {
         "role": "Réalisation de projets web et mobile pour clients variés",
